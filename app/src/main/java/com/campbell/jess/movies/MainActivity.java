@@ -1,15 +1,23 @@
 package com.campbell.jess.movies;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
+
+//TODO add detail views for each movie
+//TODO add a sort feature
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,21 +27,32 @@ public class MainActivity extends AppCompatActivity {
 
     private GridView gridView;
 
+    private Context context;
+
+    private static final String TAG = "MainActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        context = getApplicationContext();
 
-        ///TODO currently trying to get image adapter to populate with my movie poster urls
-        mJsonTestTextView = (TextView) findViewById(R.id.tv_json_test);
-        GridView gridView = (GridView) findViewById(R.id.gridview);
-       // ImageAdapter adapter = new ImageAdapter(this);
-       // gridView.setAdapter(adapter);
+        gridView = (GridView) findViewById(R.id.gridview);
+
+        gridView.setOnClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Toast.makeText(MainActivity.this, ""+ position, Toast.LENGTH_SHORT).show();
+            }
+        });
+
         loadMovieData();
     }
 
     private void loadMovieData() {
+
         new FetchMovieTask().execute();
     }
 
@@ -42,9 +61,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected String[] doInBackground(String... strings) {
             URL movieRequestUrl = NetworkUtils.buildUrl();
+
             try {
                 String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
-                //String[] simpleJsonMovieData = MovieJsonUtils.getSimpleMovieStringsFromJson(MainActivity.this, jsonMovieResponse);
                 String[] simpleJsonMovieData = MovieJsonUtils.getMoviePostersFromJson(jsonMovieResponse);
                 return simpleJsonMovieData;
             } catch (Exception e) {
@@ -52,14 +71,16 @@ public class MainActivity extends AppCompatActivity {
                 return null;
             }
         }
-        //TODO eventually use a recycler view with RecyclerView.GridLayoutManager
-        //TODO 1 create a data model like in the sandwich app to store the data for each movie
-        //TODO have each movie url go to setmThumbPaths(String[])
+        //TODO use a recycler view with RecyclerView.GridLayoutManager
+        //TODO create a data model like in the sandwich app to store the data for each movie
         @Override
         protected void onPostExecute(String[] jsonMovieResponse){
             if (jsonMovieResponse != null) {
                 posters = jsonMovieResponse;
-                ImageAdapter adapter = new ImageAdapter(MainActivity.this, posters);
+                Log.v(TAG, "first poster " + posters[0]);
+                //Log.v(TAG, "context "+context);
+
+                ImageAdapter adapter = new ImageAdapter(context, posters);
                 gridView.setAdapter(adapter);
             }
         }

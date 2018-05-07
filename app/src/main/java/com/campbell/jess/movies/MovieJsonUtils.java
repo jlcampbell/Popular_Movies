@@ -13,7 +13,9 @@ import java.net.HttpURLConnection;
  */
 
 public class MovieJsonUtils {
-    //TODO make a method that returns a string array of poster urls
+    //TODO clean up duplicate code between the methods
+
+    // method to get a string array of movie poster urls from the json string
     public static String[] getMoviePostersFromJson(String movieJsonString)
         throws JSONException {
         final String MOVIE_POSTER = "poster_path";
@@ -59,7 +61,7 @@ public class MovieJsonUtils {
 
 
 
-    //returns a simple string- just the movie titles
+    //returns just the movie titles from the JSON string
     public static String[] getSimpleMovieStringsFromJson(Context context, String movieJsonString)
         throws JSONException {
         final String MOVIE_LIST = "list";

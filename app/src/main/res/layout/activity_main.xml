@@ -4,17 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
-    <TextView
-        android:id="@+id/tv_json_test"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <GridView
         android:id="@+id/gridview"
-        android:layout_marginTop="400dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:columnWidth="90dp"
+        android:columnWidth="150dp"
         android:numColumns="2"
         android:verticalSpacing="10dp"
         android:horizontalSpacing="10dp"

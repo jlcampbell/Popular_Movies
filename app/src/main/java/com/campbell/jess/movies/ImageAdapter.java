@@ -7,14 +7,17 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
-//TODO update ImageAdapter to take in a String[] of thumbnail paths
 public class ImageAdapter extends BaseAdapter {
+
+    //TODO refactor class name
+    //TODO add onclick to adapter
 
     private Context mContext;
     private String[] mThumbPaths;
 
-    public ImageAdapter(Context c, String[] thumbPaths) {
-        mContext = c;
+    public ImageAdapter(Context context, String[] thumbPaths) {
+
+        mContext = context;
         mThumbPaths = thumbPaths;
     }
 
@@ -38,32 +41,13 @@ public class ImageAdapter extends BaseAdapter {
         ImageView imageView;
         if (view == null) {
             imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new ViewGroup.LayoutParams(200, 200));
-            imageView.setPadding(8, 8, 8, 8);
+            imageView.setLayoutParams(new ViewGroup.LayoutParams(400, 400));
+            imageView.setPadding(0, 0, 0, 0);
         } else {
             imageView = (ImageView) view;
         }
         Picasso.get().load(mThumbPaths[i]).into(imageView);
-        //imageView.setImageResource(mThumbIds[i]);
         return imageView;
     }
 
-
-    //TODO populate mThumbPaths with data from json response
-    /**
-    private String[] mThumbPaths = {
-            "http://i.imgur.com/DvpvklR.png", "http://i.imgur.com/DvpvklR.png",
-            "http://i.imgur.com/DvpvklR.png", "http://i.imgur.com/DvpvklR.png",
-            "http://i.imgur.com/DvpvklR.png", "http://i.imgur.com/DvpvklR.png",
-            "http://i.imgur.com/DvpvklR.png", "http://i.imgur.com/DvpvklR.png",
-            "http://i.imgur.com/DvpvklR.png", "http://i.imgur.com/DvpvklR.png",
-            "http://i.imgur.com/DvpvklR.png", "http://i.imgur.com/DvpvklR.png",
-            "http://i.imgur.com/DvpvklR.png", "http://i.imgur.com/DvpvklR.png",
-            "http://i.imgur.com/DvpvklR.png", "http://i.imgur.com/DvpvklR.png",
-            "http://i.imgur.com/DvpvklR.png", "http://i.imgur.com/DvpvklR.png",
-            "http://i.imgur.com/DvpvklR.png", "http://i.imgur.com/DvpvklR.png"
-
-
-    };
-**/
 }
