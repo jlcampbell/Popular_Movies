@@ -40,16 +40,18 @@ public class MainActivity extends AppCompatActivity {
 
         gridView = (GridView) findViewById(R.id.gridview);
 
-        gridView.setOnClickListener(new AdapterView.OnItemClickListener() {
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Toast.makeText(MainActivity.this, ""+ position, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this,"position"+position, Toast.LENGTH_SHORT).show();
             }
         });
 
-        loadMovieData();
+            loadMovieData();
     }
+
 
     private void loadMovieData() {
 
