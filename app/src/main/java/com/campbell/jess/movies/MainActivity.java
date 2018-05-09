@@ -1,6 +1,7 @@
 package com.campbell.jess.movies;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -46,6 +47,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Toast.makeText(MainActivity.this,"position"+position, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+                intent.putExtra("position", position);
+                startActivity(intent);
+
             }
         });
 
