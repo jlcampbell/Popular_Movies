@@ -26,7 +26,7 @@ public final class NetworkUtils {
             e.printStackTrace();
         }
 
-        Log.v(TAG, "build URI "+ url);
+        Log.v(TAG, "build URL "+ url);
 
 
         return url;

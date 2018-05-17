@@ -10,10 +10,12 @@ import com.squareup.picasso.Picasso;
 public class ImageAdapter extends BaseAdapter {
 
     //TODO refactor class name
-    //TODO add onclick to adapter
+
 
     private Context mContext;
     private String[] mThumbPaths;
+
+    //this grid view adapter heavily references the developer guide at https://developer.android.com/guide/topics/ui/layout/gridview#java
 
     public ImageAdapter(Context context, String[] thumbPaths) {
 
@@ -36,13 +38,17 @@ public class ImageAdapter extends BaseAdapter {
         return 0;
     }
 
+
+    //TODO adjust image view so height and width of each thumbnail view are not hardcoded
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         ImageView imageView;
         if (view == null) {
             imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new ViewGroup.LayoutParams(400, 400));
+            imageView.setLayoutParams(new ViewGroup.LayoutParams(800, 1000));
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setPadding(0, 0, 0, 0);
+
         } else {
             imageView = (ImageView) view;
         }

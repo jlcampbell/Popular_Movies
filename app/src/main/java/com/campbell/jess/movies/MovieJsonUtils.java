@@ -27,7 +27,7 @@ public class MovieJsonUtils {
 
     final String MOVIE_RELEASE_DATE = "date";
 
-    //method to get a ready to use JSONArray of movies from a json string
+    //method to get a ready to use JSONArray with entries for each movie from a json string
     public static JSONArray getJsonArray(String movieJsonString) throws JSONException {
 
 

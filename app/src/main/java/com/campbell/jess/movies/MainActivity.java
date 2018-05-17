@@ -84,8 +84,6 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String[] jsonMovieResponse){
             if (jsonMovieResponse != null) {
                 posters = jsonMovieResponse;
-                Log.v(TAG, "first poster " + posters[0]);
-                //Log.v(TAG, "context "+context);
 
                 ImageAdapter adapter = new ImageAdapter(context, posters);
                 gridView.setAdapter(adapter);
