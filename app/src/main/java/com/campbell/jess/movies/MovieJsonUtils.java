@@ -24,6 +24,8 @@ public class MovieJsonUtils {
 
     final static String MOVIE_POSTER_URL = "poster_path";
 
+    final static String MOVIE_BACKDROP_URL = "backdrop_path";
+
     final static String MOVIE_PLOT = "overview";
 
     final static String MOVIE_RATING = "vote_average";
@@ -87,6 +89,7 @@ public class MovieJsonUtils {
 
         String title;
         String poster;
+        String backdrop;
         String plot;
         String rating;
         String releaseDate;
@@ -97,12 +100,13 @@ public class MovieJsonUtils {
         JSONObject movieData = resultsArray.getJSONObject(position);
 
         title = movieData.getString(MOVIE_TITLE);
-        poster = "http://image.tmdb.org/t/p/" + "w185"+ movieData.getString(MOVIE_POSTER_URL);
+        //poster = "http://image.tmdb.org/t/p/" + "w300"+ movieData.getString(MOVIE_POSTER_URL);
+        backdrop = "http://image.tmdb.org/t/p/" + "w500"+ movieData.getString(MOVIE_BACKDROP_URL);
         plot = movieData.getString(MOVIE_PLOT);
         rating = movieData.getString(MOVIE_RATING);
         releaseDate = movieData.getString(MOVIE_RELEASE_DATE);
 
-        Movie movie = new Movie(title, poster, plot, rating, releaseDate);
+        Movie movie = new Movie(title, backdrop, plot, rating, releaseDate);
         return movie;
     }
 }
