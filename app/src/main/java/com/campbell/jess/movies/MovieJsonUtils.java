@@ -1,6 +1,8 @@
 package com.campbell.jess.movies;
 
 import android.content.Context;
+import android.nfc.Tag;
+import android.util.Log;
 
 import com.campbell.jess.movies.model.Movie;
 
@@ -16,20 +18,20 @@ import java.net.HttpURLConnection;
 
 public class MovieJsonUtils {
     //TODO clean up duplicate code between the methods
+    final static String TAG = "movie json utils";
 
-    final String MOVIE_TITLE = "title";
+    final static String MOVIE_TITLE = "title";
 
-    final String MOVIE_POSTER_URL = "url";
+    final static String MOVIE_POSTER_URL = "poster_path";
 
-    final String MOVIE_PLOT = "plot";
+    final static String MOVIE_PLOT = "overview";
 
-    final String MOVIE_RATING = "rating";
+    final static String MOVIE_RATING = "vote_average";
 
-    final String MOVIE_RELEASE_DATE = "date";
+    final static String MOVIE_RELEASE_DATE = "release_date";
 
     //method to get a ready to use JSONArray with entries for each movie from a json string
     public static JSONArray getJsonArray(String movieJsonString) throws JSONException {
-
 
         final String MOVIE_MESSAGE_CODE = "cod";
 
@@ -59,10 +61,10 @@ public class MovieJsonUtils {
     // method to get a string array of movie poster urls from the json string
     public static String[] getMoviePostersFromJson(String movieJsonString)
         throws JSONException {
-        final String MOVIE_POSTER = "poster_path";
 
         String[] parsedMoviePosters = null;
 
+        //getJsonArray returns array of movie json objects from "results" key
         JSONArray resultsArray = getJsonArray(movieJsonString);
          parsedMoviePosters = new String[resultsArray.length()];
 
@@ -70,7 +72,7 @@ public class MovieJsonUtils {
         for (int i=0; i < resultsArray.length(); i++) {
             //get the Json object representing the movie//
             JSONObject movieData = resultsArray.getJSONObject(i);
-            String poster = "http://image.tmdb.org/t/p/" + "w185" + movieData.getString(MOVIE_POSTER);
+            String poster = "http://image.tmdb.org/t/p/" + "w185" + movieData.getString(MOVIE_POSTER_URL);
 
             parsedMoviePosters[i] = poster;
 
@@ -79,56 +81,9 @@ public class MovieJsonUtils {
 
     }
 
-
-
-    //returns just the movie titles from the JSON string
-    public static String[] getSimpleMovieStringsFromJson(Context context, String movieJsonString)
-        throws JSONException {
-        final String MOVIE_LIST = "list";
-
-        final String MOVIE_TITLE = "title";
-
-        final String MOVIE_POSTER_URL = "url";
-
-        final String MOVIE_PLOT = "plot";
-
-        final String MOVIE_RATING = "rating";
-
-        final String MOVIE_RELEASE_DATE = "date";
-
-        String[] parsedMovieData = null;
-
-        JSONArray resultsArray = getJsonArray(movieJsonString);
-        parsedMovieData = new String[resultsArray.length()];
-
-        //iterate through each movie
-        for (int i=0; i < resultsArray.length(); i++) {
-            //get the Json object representing the movie//
-            JSONObject movieData = resultsArray.getJSONObject(i);
-            String title = movieData.getString(MOVIE_TITLE);
-
-            parsedMovieData[i] = title;
-
-        }
-
-        //currently, parsed movie data returns just the title
-
-
-        return parsedMovieData;
-    }
-    //returns a movie object for a given position in the movie string
+    //returns a Movie object for a given position in the movie string
     public static Movie getMovie(String movieJsonString, int position)
             throws JSONException{
-        final String MOVIE_TITLE = "title";
-
-        final String MOVIE_POSTER_URL = "url";
-
-        final String MOVIE_PLOT = "plot";
-
-        final String MOVIE_RATING = "rating";
-
-        final String MOVIE_RELEASE_DATE = "date";
-
 
         String title;
         String poster;
@@ -136,11 +91,13 @@ public class MovieJsonUtils {
         String rating;
         String releaseDate;
 
+        //getJsonArray returns array of movie json objects from "results" key
         JSONArray resultsArray = getJsonArray(movieJsonString);
+        //movieData should be a JSONObject for a single movie
         JSONObject movieData = resultsArray.getJSONObject(position);
 
         title = movieData.getString(MOVIE_TITLE);
-        poster = movieData.getString(MOVIE_POSTER_URL);
+        poster = "http://image.tmdb.org/t/p/" + "w185"+ movieData.getString(MOVIE_POSTER_URL);
         plot = movieData.getString(MOVIE_PLOT);
         rating = movieData.getString(MOVIE_RATING);
         releaseDate = movieData.getString(MOVIE_RELEASE_DATE);

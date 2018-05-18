@@ -5,9 +5,11 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.campbell.jess.movies.model.Movie;
+import com.squareup.picasso.Picasso;
 
 import java.net.URL;
 
@@ -15,7 +17,12 @@ public class DetailActivity extends AppCompatActivity {
 
     private int position;
     private Movie mMovie;
-    TextView test;
+    TextView tv_title;
+    TextView tv_overview;
+    TextView tv_releaseDate;
+    TextView tv_rating;
+    ImageView iv_poster;
+
     String TAG = "detail Activity";
 
 
@@ -24,7 +31,11 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        test = findViewById(R.id.testText);
+         tv_title = findViewById(R.id.tv_title);
+         tv_releaseDate = findViewById(R.id.tv_releaseDate);
+         tv_rating = findViewById(R.id.tv_rating);
+         tv_overview = findViewById(R.id.tv_overview);
+         iv_poster = findViewById(R.id.iv_poster);
 
         Intent intentThatStartedActivity = getIntent();
         position = intentThatStartedActivity.getIntExtra("position", 0);
@@ -39,6 +50,7 @@ public class DetailActivity extends AppCompatActivity {
             Log.v(TAG, "fetch details task- url is: "+movieRequestUrl.toString());
 
             try {
+                //try to get http response
                 String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
                 Log.v(TAG, "jsonMovieResponse is "+jsonMovieResponse);
                 Movie movie = MovieJsonUtils.getMovie(jsonMovieResponse, position);
@@ -62,7 +74,10 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void populateUI(Movie movie){
-
-        test.setText(movie.getTitle());
+        Picasso.get().load(movie.getPoster()).into(iv_poster);
+        tv_title.setText(movie.getTitle());
+        tv_overview.setText(movie.getPlot());
+        tv_rating.setText(movie.getRating());
+        tv_releaseDate.setText(movie.getReleaseDate());
     }
     }

@@ -69,10 +69,11 @@ public class MainActivity extends AppCompatActivity {
         protected String[] doInBackground(String... strings) {
             URL movieRequestUrl = NetworkUtils.buildUrl();
 
+
             try {
                 String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
-                String[] simpleJsonMovieData = MovieJsonUtils.getMoviePostersFromJson(jsonMovieResponse);
-                return simpleJsonMovieData;
+                String[] posterUrls = MovieJsonUtils.getMoviePostersFromJson(jsonMovieResponse);
+                return posterUrls;
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -81,9 +82,9 @@ public class MainActivity extends AppCompatActivity {
         //TODO use a recycler view with RecyclerView.GridLayoutManager
         //TODO create a data model like in the sandwich app to store the data for each movie
         @Override
-        protected void onPostExecute(String[] jsonMovieResponse){
-            if (jsonMovieResponse != null) {
-                posters = jsonMovieResponse;
+        protected void onPostExecute(String[] posterUrls){
+            if (posterUrls != null) {
+                posters = posterUrls;
 
                 ImageAdapter adapter = new ImageAdapter(context, posters);
                 gridView.setAdapter(adapter);
