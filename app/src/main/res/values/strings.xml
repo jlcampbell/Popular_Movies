@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">movies</string>
+    <string name="pref_sort_default">"SORT_POPULARITY"</string>
 </resources>
