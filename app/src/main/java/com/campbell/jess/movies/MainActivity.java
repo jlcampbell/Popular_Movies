@@ -2,8 +2,12 @@ package com.campbell.jess.movies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
+
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceManager;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        //PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         context = getApplicationContext();
 
@@ -59,7 +63,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-            loadMovieData();
+        //PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+
+        loadMovieData();
     }
 
     @Override
@@ -75,10 +81,14 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings){
             Intent startSettingsActivity = new Intent(this, SettingsActivity.class);
             startActivity(startSettingsActivity);
+            Toast.makeText(this, "settings now", Toast.LENGTH_SHORT).show();
+
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
+
     private void loadMovieData() {
 
         new FetchMovieTask().execute();

@@ -1,4 +1,20 @@
 <resources>
+
+    <!-- used throughout popular movies -->
     <string name="app_name">movies</string>
-    <string name="pref_sort_default">"SORT_POPULARITY"</string>
+
+
+    <string name="action_settings">Settings</string>
+    <!-- used in the settings -->
+    <string name="pref_sort_label">Sort By</string>
+
+    <string name="pref_sort_label_popularity">Popularity</string>
+
+    <string name="pref_sort_label_rating">Rating</string>
+
+    <string name="pref_sort_key" translatable="false">Sort</string>
+
+    <string name="pref_sort_popularity" translatable="false">Popularity</string>
+
+    <string name="pref_sort_rating" translatable="false">Rating</string>
 </resources>

@@ -2,12 +2,22 @@ package com.campbell.jess.movies;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
+
+
+import android.support.v7.preference.CheckBoxPreference;
+import android.support.v7.preference.PreferenceManager;
+
+
+import android.support.v7.preference.PreferenceScreen;
+import android.support.v7.preference.ListPreference;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceFragmentCompat;
+
+
+
 //TODO finish settingsfragment class to complete settings UI
-//borrowed from sunshine project
-public class SettingsFragment extends PreferenceFragment implements
+//heavily referenced sunshine project from phase 1
+public class SettingsFragment extends PreferenceFragmentCompat implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     private void setPreferenceSummary(Preference preference, Object value) {
@@ -30,15 +40,38 @@ public class SettingsFragment extends PreferenceFragment implements
 
 
     @Override
-    public void onCreate(Bundle savedInstanceState, String s) {
-
-        //load preferences
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.preferences);
+        SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
+        PreferenceScreen preferenceScreen = getPreferenceScreen();
+        int count = preferenceScreen.getPreferenceCount();
+        for (int i=0; i < count; i++) {
+            Preference preference = preferenceScreen.getPreference(i);
+            String value = sharedPreferences.getString(preference.getKey(), "");
+            setPreferenceSummary(preference, value);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
 
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Preference preference = findPreference(key);
+        if (null != preference){
+            setPreferenceSummary(preference, sharedPreferences.getString(key, ""));
+        }
     }
+
+
 }

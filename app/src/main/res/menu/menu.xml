@@ -6,7 +6,7 @@
     >
     <item
         android:id="@+id/action_settings"
-        android:title="settings"
-        app:showAsAction="ifRoom"
-        >Settings</item>
+        android:title="@string/action_settings"
+        app:showAsAction="never"
+        />
 </menu>
