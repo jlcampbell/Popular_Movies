@@ -16,11 +16,21 @@ public final class NetworkUtils {
     /* omit api key from public repos */
     private static final String API_KEY = "";
 
-    //public static final String POPULAR_MOVIES_URL;
+    private String urlBase;
+
+    public void setUrlBase(String sortBy){
+        switch (sortBy) {
+            case "Popularity": urlBase = "https://api.themoviedb.org/3/movie/popular?api_key=";
+            case "Rating": urlBase = "https://api.themoviedb.org/3/movie/top_rated?api_key=";
+        }
+
+    }
+
 
     public static URL buildUrl() {
         URL url = null;
         try {
+            //url = new URL("https://api.themoviedb.org/3/movie/popular?api_key="+API_KEY+"&language=en-US&page=1");
             url = new URL("https://api.themoviedb.org/3/movie/popular?api_key="+API_KEY+"&language=en-US&page=1");
         } catch (MalformedURLException e) {
             e.printStackTrace();
