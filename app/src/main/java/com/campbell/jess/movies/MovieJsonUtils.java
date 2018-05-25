@@ -100,7 +100,6 @@ public class MovieJsonUtils {
         JSONObject movieData = resultsArray.getJSONObject(position);
 
         title = movieData.getString(MOVIE_TITLE);
-        //poster = "http://image.tmdb.org/t/p/" + "w300"+ movieData.getString(MOVIE_POSTER_URL);
         backdrop = "http://image.tmdb.org/t/p/" + "w500"+ movieData.getString(MOVIE_BACKDROP_URL);
         plot = movieData.getString(MOVIE_PLOT);
         rating = movieData.getString(MOVIE_RATING);

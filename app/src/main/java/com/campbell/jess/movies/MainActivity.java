@@ -25,20 +25,16 @@ import com.squareup.picasso.Picasso;
 
 import java.net.URL;
 
-//TODO add detail views for each movie
-//TODO add a sort feature
+//TODO add detail labels
+//TODO test with no internet connection
 
-public class MainActivity extends AppCompatActivity {
-
-    private TextView mJsonTestTextView;
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private String[] posters;
-
     private GridView gridView;
-
     private Context context;
-
     private static final String TAG = "MainActivity";
+    private ImageAdapter imageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +58,26 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-        //PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
-
+        setupSharedPreferences();
         loadMovieData();
     }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        //updateUI();
+    }
+
+    //private void updateUI(){
+    //    imageAdapter = new ImageAdapter()
+    //}
+
+    private void setupSharedPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        NetworkUtils.setUrlBase(sharedPreferences.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_popularity)), this);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu (Menu menu){
@@ -94,6 +105,27 @@ public class MainActivity extends AppCompatActivity {
         new FetchMovieTask().execute();
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Log.v(TAG, "key "+key);
+        Log.v(TAG, getString(R.string.pref_sort_key));
+        if (key.equals(getString(R.string.pref_sort_key))){
+            Log.v(TAG, "sort changed");
+            String sort = sharedPreferences.getString(getString(R.string.pref_sort_key),"");
+            Log.v(TAG, sort);
+            NetworkUtils.setUrlBase(sort, this);
+            Log.v(TAG, NetworkUtils.getUrlBase());
+            loadMovieData();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
+    }
+
     public class FetchMovieTask extends AsyncTask<String, Void, String[]> {
 
         @Override
@@ -104,6 +136,8 @@ public class MainActivity extends AppCompatActivity {
             try {
                 String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
                 String[] posterUrls = MovieJsonUtils.getMoviePostersFromJson(jsonMovieResponse);
+                Log.v(TAG, "fetching movie");
+                Log.v(TAG, posterUrls[0]);
                 return posterUrls;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -111,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         //TODO use a recycler view with RecyclerView.GridLayoutManager
-        //TODO create a data model like in the sandwich app to store the data for each movie
+
         @Override
         protected void onPostExecute(String[] posterUrls){
             if (posterUrls != null) {
