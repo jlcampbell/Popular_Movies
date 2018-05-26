@@ -7,16 +7,25 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
+
+/**
+ * used by gridView to populate user interface with movie posters. a new ImageAdapter is created each time
+ * new data is loaded
+ */
+
 public class ImageAdapter extends BaseAdapter {
 
-    //TODO refactor class name
-
-
-    private Context mContext;
+    private final Context mContext;
     private String[] mThumbPaths;
 
     //this grid view adapter heavily references the developer guide at https://developer.android.com/guide/topics/ui/layout/gridview#java
 
+    /**
+     * ImageAdapter constructor
+     *
+     * @param context
+     * @param thumbPaths - the paths to get movie posters online, obtained from the moviedb api response
+     */
     public ImageAdapter(Context context, String[] thumbPaths) {
 
         mContext = context;
@@ -38,14 +47,19 @@ public class ImageAdapter extends BaseAdapter {
         return 0;
     }
 
-
-    //TODO adjust image view so height and width of each thumbnail view are not hardcoded
+    /**
+     * used to populate the movie grid in the main activity
+     * @param i
+     * @param view
+     * @param viewGroup
+     * @return
+     */
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         ImageView imageView;
         if (view == null) {
             imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new ViewGroup.LayoutParams(800, 1000));
+            imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 800));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setPadding(0, 0, 0, 0);
 

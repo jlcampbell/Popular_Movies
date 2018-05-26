@@ -1,9 +1,5 @@
 package com.campbell.jess.movies;
 
-import android.content.Context;
-import android.nfc.Tag;
-import android.util.Log;
-
 import com.campbell.jess.movies.model.Movie;
 
 import org.json.JSONArray;
@@ -11,14 +7,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
+import java.util.Objects;
 
 /**
  * Utility functions to handle The Movie Database JSON data.
  */
 
-public class MovieJsonUtils {
-    //TODO clean up duplicate code between the methods
-    final static String TAG = "movie json utils";
+class MovieJsonUtils {
 
     final static String MOVIE_TITLE = "title";
 
@@ -56,19 +51,18 @@ public class MovieJsonUtils {
             }
         }
 
-        JSONArray resultsArray = movieJson.getJSONArray("results");
-        return resultsArray;
+        return movieJson.getJSONArray("results");
     }
 
     // method to get a string array of movie poster urls from the json string
     public static String[] getMoviePostersFromJson(String movieJsonString)
         throws JSONException {
 
-        String[] parsedMoviePosters = null;
+        String[] parsedMoviePosters;
 
         //getJsonArray returns array of movie json objects from "results" key
         JSONArray resultsArray = getJsonArray(movieJsonString);
-         parsedMoviePosters = new String[resultsArray.length()];
+         parsedMoviePosters = new String[Objects.requireNonNull(resultsArray).length()];
 
         //iterate through each movie
         for (int i=0; i < resultsArray.length(); i++) {

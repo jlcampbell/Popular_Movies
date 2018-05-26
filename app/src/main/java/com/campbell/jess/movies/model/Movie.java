@@ -2,7 +2,7 @@ package com.campbell.jess.movies.model;
 
 public class Movie {
 
-    private String title;
+    private final String title;
     private String poster;
     private String plot;
     private String rating;

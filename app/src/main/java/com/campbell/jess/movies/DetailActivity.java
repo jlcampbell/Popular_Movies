@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,14 +15,11 @@ import java.net.URL;
 public class DetailActivity extends AppCompatActivity {
 
     private int position;
-    private Movie mMovie;
-    TextView tv_title;
+    private TextView tv_title;
     TextView tv_overview;
     TextView tv_releaseDate;
     TextView tv_rating;
     ImageView iv_poster;
-
-    String TAG = "detail Activity";
 
 
     @Override
@@ -47,16 +43,11 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         protected Movie doInBackground(String... strings) {
             URL movieRequestUrl = NetworkUtils.buildUrl();
-            Log.v(TAG, "fetch details task- url is: "+movieRequestUrl.toString());
 
             try {
                 //try to get http response
                 String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
-                Log.v(TAG, "jsonMovieResponse is "+jsonMovieResponse);
-                Movie movie = MovieJsonUtils.getMovie(jsonMovieResponse, position);
-
-
-                return movie;
+                return MovieJsonUtils.getMovie(jsonMovieResponse, position);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -66,7 +57,7 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Movie movie){
             if (movie != null) {
-                mMovie = movie;
+                Movie mMovie = movie;
                 populateUI(mMovie);
             }
 
