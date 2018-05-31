@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Toast.makeText(MainActivity.this, "position" + position, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
                 intent.putExtra("position", position);
                 startActivity(intent);
