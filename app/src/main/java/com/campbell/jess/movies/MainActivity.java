@@ -26,7 +26,7 @@ import java.net.URL;
  * MainActivity contains array of movie posters that can be selected to see more details about each movie
  */
 
-public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener, PosterRecyclerViewAdapter.PosterAdapterOnClickHandler {
 
     //private GridView gridView;
     private Context context;
@@ -47,19 +47,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         setupSharedPreferences();
 
         //gridView = findViewById(R.id.gridview);
-/**
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
-                intent.putExtra("position", position);
-                startActivity(intent);
-
-            }
-        });
- **/
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_posters);
 
 
@@ -73,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         mRecyclerView.setHasFixedSize(true);
 
-        mRecyclerViewAdapter = new PosterRecyclerViewAdapter();
+        mRecyclerViewAdapter = new PosterRecyclerViewAdapter(this);
 
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
 
@@ -129,6 +117,28 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     private void showPosterDataView() {
         mRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+
+    /**
+     gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+    Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+    intent.putExtra("position", position);
+    startActivity(intent);
+
+    }
+    });
+     **/
+
+    @Override
+    public void onClick(int position) {
+        Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+        intent.putExtra("position", position);
+        startActivity(intent);
     }
 
 

@@ -18,26 +18,33 @@ public class PosterRecyclerViewAdapter extends RecyclerView.Adapter<PosterRecycl
     private String[] mThumbPaths;
     //private final Context mContext;
 
-    private final PosterAdapterOnClickHandler;
+    private final PosterAdapterOnClickHandler mClickHandler;
 
     public interface PosterAdapterOnClickHandler {
-        void onClick()
+        void onClick(int position);
     }
 
-    public PosterRecyclerViewAdapter(){
-
+    public PosterRecyclerViewAdapter(PosterAdapterOnClickHandler clickHandler){
+        mClickHandler = clickHandler;
     }
 
     /**
      * Cache of the children views for a poster grid item
      */
 
-    public class PosterRecyclerViewAdapterViewHolder extends RecyclerView.ViewHolder {
+    public class PosterRecyclerViewAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final ImageView mMoviePoster;
 
         public PosterRecyclerViewAdapterViewHolder(View view) {
             super(view);
             mMoviePoster = (ImageView) view.findViewById(R.id.iv_grid_poster_item);
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int adapterPosition = getAdapterPosition();
+            mClickHandler.onClick(adapterPosition);
         }
     }
 
