@@ -3,9 +3,29 @@
     <!-- used throughout popular movies -->
     <string name="app_name">movies</string>
 
-
     <string name="action_settings">Settings</string>
 
+    <!-- used in MovieJsonUtils.java -->
+    <string name="movie_title_key" translatable="false">title</string>
+
+    <string name="movie_poster_url_key" translatable="false">poster_path</string>
+
+    <string name="movie_backdrop_url_key" translatable="false">backdrop_path</string>
+
+    <string name="movie_plot_key" translatable="false">overview</string>
+
+    <string name="movie_rating_key" translatable="false">vote_average</string>
+
+    <string name="movie_release_date_key" translatable="false">release_date</string>
+
+
+
+    <!-- used in NetworkUtils.java -->
+    <string name="popularity_url_base">https://api.themoviedb.org/3/movie/popular?api_key=</string>
+
+    <string name="rating_url_base">https://api.themoviedb.org/3/movie/top_rated?api_key=</string>
+
+    <string name="url_end">&amp;language=en-US&amp;page=1</string>
 
     <!-- used in the settings -->
     <string name="pref_sort_label">Sort By</string>

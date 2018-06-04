@@ -42,12 +42,12 @@ public class DetailActivity extends AppCompatActivity {
 
         @Override
         protected Movie doInBackground(String... strings) {
-            URL movieRequestUrl = NetworkUtils.buildUrl();
+            URL movieRequestUrl = NetworkUtils.buildUrl(getApplicationContext());
 
             try {
                 //try to get http response
                 String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
-                return MovieJsonUtils.getMovie(jsonMovieResponse, position);
+                return MovieJsonUtils.getMovie(jsonMovieResponse, position, getApplicationContext());
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;

@@ -9,6 +9,8 @@ import android.support.v7.preference.PreferenceManager;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,7 +21,6 @@ import android.widget.Toast;
 
 import java.net.URL;
 
-//TODO test with no internet connection
 
 /**
  * MainActivity contains array of movie posters that can be selected to see more details about each movie
@@ -27,9 +28,14 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private GridView gridView;
+    //private GridView gridView;
     private Context context;
     private static final String TAG = "MainActivity";
+
+    private RecyclerView mRecyclerView;
+
+    private PosterRecyclerViewAdapter mRecyclerViewAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +44,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         context = getApplicationContext();
 
-        gridView = findViewById(R.id.gridview);
+        setupSharedPreferences();
 
+        //gridView = findViewById(R.id.gridview);
+/**
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 
@@ -51,7 +59,25 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
             }
         });
-        setupSharedPreferences();
+ **/
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_posters);
+
+
+
+
+
+
+        GridLayoutManager gridLayoutManager
+                = new GridLayoutManager(this, 2);
+        mRecyclerView.setLayoutManager(gridLayoutManager);
+
+        mRecyclerView.setHasFixedSize(true);
+
+        mRecyclerViewAdapter = new PosterRecyclerViewAdapter();
+
+        mRecyclerView.setAdapter(mRecyclerViewAdapter);
+
+
         loadMovieData();
     }
 
@@ -101,16 +127,21 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 .unregisterOnSharedPreferenceChangeListener(this);
     }
 
+    private void showPosterDataView() {
+        mRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+
     public class FetchMovieTask extends AsyncTask<String, Void, String[]> {
 
         @Override
         protected String[] doInBackground(String... strings) {
-            URL movieRequestUrl = NetworkUtils.buildUrl();
+            URL movieRequestUrl = NetworkUtils.buildUrl(getApplicationContext());
 
 
             try {
                 String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
-                return MovieJsonUtils.getMoviePostersFromJson(jsonMovieResponse);
+                return MovieJsonUtils.getMoviePostersFromJson(jsonMovieResponse, getApplicationContext());
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -120,9 +151,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         @Override
         protected void onPostExecute(String[] posterUrls) {
             if (posterUrls != null) {
-                String[] posters = posterUrls;
-                ImageAdapter adapter = new ImageAdapter(context, posters);
-                gridView.setAdapter(adapter);
+                showPosterDataView();
+                //ImageAdapter adapter = new ImageAdapter(context, posterUrls);
+                //gridView.setAdapter(adapter);
+                mRecyclerViewAdapter.setmThumbPaths(posterUrls);
             }
         }
     }

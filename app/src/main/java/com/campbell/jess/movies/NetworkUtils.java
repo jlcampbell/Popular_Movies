@@ -21,32 +21,35 @@ final class NetworkUtils {
     /* obtain a personal api key from www.themoviedb.org and put it here */
     private static final String API_KEY = "";
 
-    private static String urlBase = "https://api.themoviedb.org/3/movie/popular?api_key=";
+    private static String urlBase = "";
 
     /**
-     * sets the urlBase for the api request. This should be one of the preference sortby values
+     * sets the urlBase for the api request to fill the main activity poster grid.
+     * This should be one of the preference sortby values
      *
      * @param sortBy - describes whether to display movies in order of rating or popularity
      */
+
     public static void setUrlBase(String sortBy, Context context) {
         String popularity = context.getString(R.string.pref_sort_popularity);
         String rating = context.getString(R.string.pref_sort_rating);
         if (sortBy.equals(popularity)) {
-            urlBase = "https://api.themoviedb.org/3/movie/popular?api_key=";
+            urlBase = context.getString(R.string.popularity_url_base);
         } else if (sortBy.equals(rating)) {
-            urlBase = "https://api.themoviedb.org/3/movie/top_rated?api_key=";
+            urlBase = context.getString(R.string.rating_url_base);
         }
+        //TODO add favorites as a third condition
     }
 
     /**
      * uses API_KEY provided by user above and urlbase to build a url to query movieDB api
      * @return url
      */
-    public static URL buildUrl() {
+    public static URL buildUrl(Context context) {
         URL url = null;
         try {
             //url = new URL("https://api.themoviedb.org/3/movie/popular?api_key="+API_KEY+"&language=en-US&page=1");
-            url = new URL(urlBase + API_KEY + "&language=en-US&page=1");
+            url = new URL(urlBase + API_KEY + context.getString(R.string.url_end));
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
