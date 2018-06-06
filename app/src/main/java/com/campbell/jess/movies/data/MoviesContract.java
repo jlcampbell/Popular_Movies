@@ -10,6 +10,8 @@ public class MoviesContract {
 
         public static final String COLUMN_MOVIE_ID = "movie_id";
 
+        public static final String COLUMN_TITLE = "title";
+
         public static final String COLUMN_POSTER_URL = "url";
 
         public static final String COLUMN_BACKGROUND_URL = "background_url";
