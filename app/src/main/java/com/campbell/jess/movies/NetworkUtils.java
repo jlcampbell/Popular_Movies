@@ -19,7 +19,7 @@ final class NetworkUtils {
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
     /* obtain a personal api key from www.themoviedb.org and put it here */
-    private static final String API_KEY = "9978249e3956a611bb92bcfdb6d7cef6";
+    private static final String API_KEY = "";
 
     private static String urlBase = "";
 
