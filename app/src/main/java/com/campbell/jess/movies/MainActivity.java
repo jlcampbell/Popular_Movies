@@ -15,9 +15,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.Toast;
+
+import com.campbell.jess.movies.utilities.MovieJsonUtils;
+import com.campbell.jess.movies.utilities.NetworkUtils;
 
 import java.net.URL;
 

@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.campbell.jess.movies.utilities.MovieJsonUtils;
+import com.campbell.jess.movies.utilities.NetworkUtils;
 import com.campbell.jess.movies.model.Movie;
 import com.squareup.picasso.Picasso;
 

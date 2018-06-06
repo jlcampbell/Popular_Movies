@@ -1,6 +1,8 @@
-package com.campbell.jess.movies;
+package com.campbell.jess.movies.utilities;
 
 import android.content.Context;
+
+import com.campbell.jess.movies.R;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,7 +16,7 @@ import java.util.Scanner;
  */
 
 
-final class NetworkUtils {
+public final class NetworkUtils {
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
 

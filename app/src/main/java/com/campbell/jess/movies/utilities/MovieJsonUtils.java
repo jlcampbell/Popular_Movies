@@ -1,8 +1,8 @@
-package com.campbell.jess.movies;
+package com.campbell.jess.movies.utilities;
 
 import android.content.Context;
-import android.content.res.Resources;
 
+import com.campbell.jess.movies.R;
 import com.campbell.jess.movies.model.Movie;
 
 import org.json.JSONArray;
@@ -16,7 +16,7 @@ import java.util.Objects;
  * Utility functions to handle The Movie Database JSON data.
  */
 
-class MovieJsonUtils {
+public class MovieJsonUtils {
 
     private static String MOVIE_TITLE;
     private static String MOVIE_POSTER_URL;
