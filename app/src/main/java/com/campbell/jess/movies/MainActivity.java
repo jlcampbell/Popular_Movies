@@ -46,14 +46,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         setupSharedPreferences();
 
-        //gridView = findViewById(R.id.gridview);
-
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_posters);
-
-
-
-
-
 
         GridLayoutManager gridLayoutManager
                 = new GridLayoutManager(this, 2);
@@ -162,8 +155,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         protected void onPostExecute(String[] posterUrls) {
             if (posterUrls != null) {
                 showPosterDataView();
-                //ImageAdapter adapter = new ImageAdapter(context, posterUrls);
-                //gridView.setAdapter(adapter);
                 mRecyclerViewAdapter.setmThumbPaths(posterUrls);
             }
         }

@@ -10,7 +10,6 @@ import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
 
-//TODO finish settingsfragment class to complete settings UI
 //heavily referenced sunshine project from phase 1
 public class SettingsFragment extends PreferenceFragmentCompat implements
         SharedPreferences.OnSharedPreferenceChangeListener {

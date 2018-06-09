@@ -18,6 +18,7 @@ import java.util.Objects;
 
 public class MovieJsonUtils {
 
+    private static String MOVIE_ID;
     private static String MOVIE_TITLE;
     private static String MOVIE_POSTER_URL;
     private static String MOVIE_BACKDROP_URL;
@@ -29,6 +30,8 @@ public class MovieJsonUtils {
 
     //method to get a ready to use JSONArray with entries for each movie from a json string
     public static JSONArray getJsonArray(String movieJsonString, Context context) throws JSONException {
+
+        MOVIE_ID = context.getString(R.string.movie_id_key);
 
         MOVIE_TITLE = context.getString(R.string.movie_title_key) ;
 
@@ -94,7 +97,7 @@ public class MovieJsonUtils {
     //returns a Movie object for a given position in the movie string
     public static Movie getMovie(String movieJsonString, int position, Context context)
             throws JSONException{
-
+        int id;
         String title;
         String poster;
         String backdrop;
@@ -107,13 +110,14 @@ public class MovieJsonUtils {
         //movieData should be a JSONObject for a single movie
         JSONObject movieData = resultsArray.getJSONObject(position);
 
+        id = movieData.getInt(MOVIE_ID);
         title = movieData.getString(MOVIE_TITLE);
         backdrop = "http://image.tmdb.org/t/p/" + "w500"+ movieData.getString(MOVIE_BACKDROP_URL);
         plot = movieData.getString(MOVIE_PLOT);
         rating = movieData.getString(MOVIE_RATING);
         releaseDate = movieData.getString(MOVIE_RELEASE_DATE);
 
-        Movie movie = new Movie(title, backdrop, plot, rating, releaseDate);
+        Movie movie = new Movie(id, title, backdrop, plot, rating, releaseDate);
         return movie;
     }
 }
