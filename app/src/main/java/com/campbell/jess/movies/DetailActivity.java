@@ -71,8 +71,9 @@ public class DetailActivity extends AppCompatActivity {
     private void onFavoriteButtonClicked(){
         int id = gMovie.getId();
         String title = gMovie.getTitle();
+        String poster = gMovie.getPoster();
 
-        MovieEntry movieEntry = new MovieEntry(id, title);
+        MovieEntry movieEntry = new MovieEntry(id, title, poster);
 
         mAppDatabase.movieDao().insertMovie(movieEntry);
         Toast mToast = Toast.makeText(this, title, Toast.LENGTH_SHORT );

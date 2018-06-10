@@ -12,7 +12,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-@Database(entities = {MovieEntry.class}, version = 1, exportSchema = false)
+@Database(entities = {MovieEntry.class}, version = 2, exportSchema = false)
 
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -27,7 +27,10 @@ public abstract class AppDatabase extends RoomDatabase {
                 Log.d(LOG_TAG, "CREATING NEW DATABASE INSTANCE");
                 sInstance = Room.databaseBuilder(context.getApplicationContext(),
                         AppDatabase.class, AppDatabase.DATABASE_NAME)
+                        //TODO CHANGE MAIN THREAD QUEURY
                         .allowMainThreadQueries()
+                        //TODO CHANGE DATABASE MIGRATION ONCE OUT IN THE WILD
+                        .fallbackToDestructiveMigration()
                         .build();
             }
         }

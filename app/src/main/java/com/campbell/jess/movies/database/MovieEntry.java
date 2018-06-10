@@ -14,10 +14,13 @@ public class MovieEntry {
     private int id;
     @ColumnInfo(name = "title")
     private String title;
+    @ColumnInfo(name = "poster")
+    private String poster;
 
-    public MovieEntry(int id, String title) {
+    public MovieEntry(int id, String title, String poster) {
         this.id = id;
         this.title = title;
+        this.poster = poster;
     }
 
     public int getId() { return id; }
@@ -27,5 +30,11 @@ public class MovieEntry {
     public String getTitle() { return title; }
 
     public void setTitle(String title) { this.title = title; }
+
+    public String getPoster() { return poster; }
+
+    public void setPoster(String poster) {
+        this.poster = poster;
+    }
 }
 

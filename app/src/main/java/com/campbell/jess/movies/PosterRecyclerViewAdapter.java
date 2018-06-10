@@ -3,22 +3,33 @@ package com.campbell.jess.movies;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.campbell.jess.movies.R;
+import com.campbell.jess.movies.database.MovieEntry;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * PosterRecyclerViewAdapter exposes a list of movie posters to the RecyclerView
  */
+//TODO refactor adapter to accept MovieEntry  as well
 public class PosterRecyclerViewAdapter extends RecyclerView.Adapter<PosterRecyclerViewAdapter.PosterRecyclerViewAdapterViewHolder> {
+    String TAG = "ADAPTER";
+
     private String[] mThumbPaths;
-    //private final Context mContext;
+
+    private List<MovieEntry> mMovieEntries;
 
     private final PosterAdapterOnClickHandler mClickHandler;
+
+    private boolean dataFromApi = true;
 
     public interface PosterAdapterOnClickHandler {
         void onClick(int position);
@@ -74,9 +85,31 @@ public class PosterRecyclerViewAdapter extends RecyclerView.Adapter<PosterRecycl
 
     @Override
     public void onBindViewHolder(@NonNull PosterRecyclerViewAdapterViewHolder viewHolder, int position) {
-        String posterUrlForThisMovie = mThumbPaths[position];
+
+        //initialize image view
         ImageView imageView = viewHolder.mMoviePoster;
-        Picasso.get().load(posterUrlForThisMovie).into(imageView);
+        String posterUrlForThisMovie;
+
+        //if data comes from api
+        if (dataFromApi){
+            posterUrlForThisMovie = mThumbPaths[position];
+            //load url
+            Picasso.get().load(posterUrlForThisMovie).into(imageView);
+        }
+
+        //if data comes from favorites db
+        else {
+            try {
+
+                MovieEntry movieEntry = mMovieEntries.get(position);
+                posterUrlForThisMovie = movieEntry.getPoster();
+                //load url
+                Picasso.get().load(posterUrlForThisMovie).into(imageView);
+            } catch (IndexOutOfBoundsException e){
+                Log.e(TAG, e.toString());
+            }
+            }
+
     }
 
     @Override
@@ -87,10 +120,22 @@ public class PosterRecyclerViewAdapter extends RecyclerView.Adapter<PosterRecycl
 
     /**
      * This method used to set the movie posters on a PosterAdapter
+     * it is used when you have this list of thumbnails from api calls
      * @param thumbPaths The new thumbnails to display
      */
     public void setmThumbPaths(String[] thumbPaths) {
         mThumbPaths = thumbPaths;
+        dataFromApi = true;
+        notifyDataSetChanged();
+    }
+
+    /**
+     * This method is used to set poster urls directly from movieEntry from room db
+     *
+     */
+    public void setmMovieEntries(List<MovieEntry> movieEntries){
+        dataFromApi = false;
+        mMovieEntries = movieEntries;
         notifyDataSetChanged();
     }
 
