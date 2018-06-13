@@ -22,6 +22,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="Movie poster" />
+    <Button
+        android:id="@+id/btn_favorite"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="favorite"/>
 
     <TextView
         android:id="@+id/tv_title"

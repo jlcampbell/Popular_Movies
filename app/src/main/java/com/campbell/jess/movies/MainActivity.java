@@ -9,27 +9,35 @@ import android.support.v7.preference.PreferenceManager;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.Toast;
+
+import com.campbell.jess.movies.database.AppDatabase;
+import com.campbell.jess.movies.utilities.MovieJsonUtils;
+import com.campbell.jess.movies.utilities.NetworkUtils;
 
 import java.net.URL;
 
-//TODO test with no internet connection
 
 /**
  * MainActivity contains array of movie posters that can be selected to see more details about each movie
  */
 
-public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener, PosterRecyclerViewAdapter.PosterAdapterOnClickHandler {
 
-    private GridView gridView;
+    //private GridView gridView;
     private Context context;
     private static final String TAG = "MainActivity";
+
+    private RecyclerView mRecyclerView;
+    private PosterRecyclerViewAdapter mRecyclerViewAdapter;
+    private AppDatabase mAppDatabase;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,21 +46,24 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         context = getApplicationContext();
 
-        gridView = findViewById(R.id.gridview);
-
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
-                intent.putExtra("position", position);
-                startActivity(intent);
-
-            }
-        });
         setupSharedPreferences();
-        loadMovieData();
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_posters);
+
+        GridLayoutManager gridLayoutManager
+                = new GridLayoutManager(this, 2);
+        mRecyclerView.setLayoutManager(gridLayoutManager);
+
+        mRecyclerView.setHasFixedSize(false);
+
+        mRecyclerViewAdapter = new PosterRecyclerViewAdapter(this);
+
+        mRecyclerView.setAdapter(mRecyclerViewAdapter);
+
+        mAppDatabase = AppDatabase.getInstance(this);
+
+        loadMovieDataFromRoom();
+        //loadMovieDataFromApi();
     }
 
     private void setupSharedPreferences() {
@@ -81,17 +92,45 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 
 
-    private void loadMovieData() {
+    private void loadMovieDataFromApi() {
         new FetchMovieTask().execute();
+    }
+
+    //TODO refactor this temporary class- pass movieEntry list to the adapter,
+    // run in async thread
+    private void loadMovieDataFromRoom() {
+        showPosterDataView();
+        String testPoster = mAppDatabase.movieDao().loadAllMovies().get(0).getPoster();
+        Toast.makeText(context, testPoster, Toast.LENGTH_SHORT).show();
+        mRecyclerViewAdapter.setmMovieEntries(mAppDatabase.movieDao().loadAllMovies());
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.pref_sort_key))) {
             String sort = sharedPreferences.getString(getString(R.string.pref_sort_key), "");
-            NetworkUtils.setUrlBase(sort, this);
-            loadMovieData();
+            // if sort equals favorites
+            if (sort.equals(context.getString(R.string.pref_sort_favorites))) {
+                //load posters from favorites database
+
+
+                loadMovieDataFromRoom();
+            } else {
+                // if sort equals popularity or rating
+                NetworkUtils.setUrlBase(sort, this);
+                loadMovieDataFromApi();
+            }
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //if sort preference is favorites
+        //call the adapter's set Thumbnails method
+        //from the movieDao
+        // something like mRecyclerviewAdapter.setMovies(mAppDatabase.movieDao().loadAllThumbs());
+
     }
 
     @Override
@@ -101,16 +140,26 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 .unregisterOnSharedPreferenceChangeListener(this);
     }
 
+    private void showPosterDataView() {
+        mRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onClick(int position) {
+        Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+        intent.putExtra("position", position);
+        startActivity(intent);
+    }
+
+
     public class FetchMovieTask extends AsyncTask<String, Void, String[]> {
 
         @Override
         protected String[] doInBackground(String... strings) {
-            URL movieRequestUrl = NetworkUtils.buildUrl();
-
-
+            URL movieRequestUrl = NetworkUtils.buildUrl(getApplicationContext());
             try {
                 String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
-                return MovieJsonUtils.getMoviePostersFromJson(jsonMovieResponse);
+                return MovieJsonUtils.getMoviePostersFromJson(jsonMovieResponse, getApplicationContext());
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -120,9 +169,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         @Override
         protected void onPostExecute(String[] posterUrls) {
             if (posterUrls != null) {
-                String[] posters = posterUrls;
-                ImageAdapter adapter = new ImageAdapter(context, posters);
-                gridView.setAdapter(adapter);
+                showPosterDataView();
+                mRecyclerViewAdapter.setmThumbPaths(posterUrls);
             }
         }
     }

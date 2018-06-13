@@ -4,15 +4,27 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.campbell.jess.movies.database.AppDatabase;
+import com.campbell.jess.movies.database.MovieEntry;
+import com.campbell.jess.movies.utilities.MovieJsonUtils;
+import com.campbell.jess.movies.utilities.NetworkUtils;
 import com.campbell.jess.movies.model.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
+import java.util.List;
 
 public class DetailActivity extends AppCompatActivity {
+    //TODO add a favorite button
+    //TODO create a class AddMovieActivity.java
+    //TODO link AddMovieActivity to onclick of favorite button
+
 
     private int position;
     private TextView tv_title;
@@ -20,34 +32,67 @@ public class DetailActivity extends AppCompatActivity {
     TextView tv_releaseDate;
     TextView tv_rating;
     ImageView iv_poster;
+    Button btn_favorite;
 
+    Movie gMovie;
+
+    AppDatabase mAppDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-         tv_title = findViewById(R.id.tv_title);
-         tv_releaseDate = findViewById(R.id.tv_releaseDate);
-         tv_rating = findViewById(R.id.tv_rating);
-         tv_overview = findViewById(R.id.tv_overview);
-         iv_poster = findViewById(R.id.iv_poster);
+        initViews();
+
+        mAppDatabase = AppDatabase.getInstance(getApplicationContext());
 
         Intent intentThatStartedActivity = getIntent();
         position = intentThatStartedActivity.getIntExtra("position", 0);
         new FetchDetailsTask().execute();
     }
 
+    private void initViews(){
+        tv_title = findViewById(R.id.tv_title);
+        tv_releaseDate = findViewById(R.id.tv_releaseDate);
+        tv_rating = findViewById(R.id.tv_rating);
+        tv_overview = findViewById(R.id.tv_overview);
+        iv_poster = findViewById(R.id.iv_poster);
+
+        btn_favorite = findViewById(R.id.btn_favorite);
+        btn_favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onFavoriteButtonClicked();
+            }
+        });
+
+    }
+
+    private void onFavoriteButtonClicked(){
+        int id = gMovie.getId();
+        String title = gMovie.getTitle();
+        String poster = gMovie.getPoster();
+
+        MovieEntry movieEntry = new MovieEntry(id, title, poster);
+
+        mAppDatabase.movieDao().insertMovie(movieEntry);
+        Toast mToast = Toast.makeText(this, title, Toast.LENGTH_SHORT );
+        mToast.show();
+    }
+
     public class FetchDetailsTask extends AsyncTask<String, Void, Movie> {
 
         @Override
         protected Movie doInBackground(String... strings) {
-            URL movieRequestUrl = NetworkUtils.buildUrl();
+            URL movieRequestUrl = NetworkUtils.buildUrl(getApplicationContext());
+            URL movieReviewRequestUrl = NetworkUtils.buildReviewUrl()
 
             try {
                 //try to get http response
                 String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
-                return MovieJsonUtils.getMovie(jsonMovieResponse, position);
+                List<String> jsonMovieReviewResponse
+                return MovieJsonUtils.getMovie(jsonMovieResponse, position, getApplicationContext());
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -58,6 +103,7 @@ public class DetailActivity extends AppCompatActivity {
         protected void onPostExecute(Movie movie){
             if (movie != null) {
                 Movie mMovie = movie;
+                gMovie = movie;
                 populateUI(mMovie);
             }
 
