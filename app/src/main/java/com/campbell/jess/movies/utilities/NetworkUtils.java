@@ -40,7 +40,7 @@ public final class NetworkUtils {
         } else if (sortBy.equals(rating)) {
             urlBase = context.getString(R.string.rating_url_base);
         }
-        //TODO add favorites as a third condition
+
     }
 
     /**
@@ -57,6 +57,14 @@ public final class NetworkUtils {
         }
 
         return url;
+    }
+
+    public static URL buildReviewUrl(Context context) {
+        URL url = null;
+        String reviewBase = 
+        try {
+            url = new URL()
+        }
     }
 
     /**

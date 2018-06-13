@@ -18,6 +18,7 @@ import com.campbell.jess.movies.model.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
+import java.util.List;
 
 public class DetailActivity extends AppCompatActivity {
     //TODO add a favorite button
@@ -85,10 +86,12 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         protected Movie doInBackground(String... strings) {
             URL movieRequestUrl = NetworkUtils.buildUrl(getApplicationContext());
+            URL movieReviewRequestUrl = NetworkUtils.buildReviewUrl()
 
             try {
                 //try to get http response
                 String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
+                List<String> jsonMovieReviewResponse
                 return MovieJsonUtils.getMovie(jsonMovieResponse, position, getApplicationContext());
             } catch (Exception e) {
                 e.printStackTrace();

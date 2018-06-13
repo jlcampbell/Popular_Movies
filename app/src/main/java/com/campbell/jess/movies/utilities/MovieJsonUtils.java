@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -105,10 +106,16 @@ public class MovieJsonUtils {
         String rating;
         String releaseDate;
 
+        List<String> reviews;
+        //some kind of movie trailer variable
+
         //getJsonArray returns array of movie json objects from "results" key
         JSONArray resultsArray = getJsonArray(movieJsonString, context);
+
         //movieData should be a JSONObject for a single movie
         JSONObject movieData = resultsArray.getJSONObject(position);
+
+        //get reviews
 
         id = movieData.getInt(MOVIE_ID);
         title = movieData.getString(MOVIE_TITLE);
@@ -116,6 +123,8 @@ public class MovieJsonUtils {
         plot = movieData.getString(MOVIE_PLOT);
         rating = movieData.getString(MOVIE_RATING);
         releaseDate = movieData.getString(MOVIE_RELEASE_DATE);
+
+        //reviews = reviewData.getString(
 
         Movie movie = new Movie(id, title, backdrop, plot, rating, releaseDate);
         return movie;
