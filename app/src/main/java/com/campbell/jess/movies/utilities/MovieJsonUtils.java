@@ -46,6 +46,8 @@ public class MovieJsonUtils {
 
         MOVIE_RELEASE_DATE = context.getString(R.string.movie_release_date_key);
 
+        MOVIE_REVIEW = context.getString(R.string.movie_review_key);
+
 
 
         final String MOVIE_MESSAGE_CODE = "cod";
@@ -95,16 +97,28 @@ public class MovieJsonUtils {
 
     }
 
+    public static String[] getReviewsFromJson(String reviewJsonString, Context context)
+        throws JSONException {
+
+        String[] parsedReviews;
+
+        JSONArray reviewsArray = getJsonArray(reviewJsonString, context);
+        parsedReviews = new String[Objects.requireNonNull(reviewsArray).length()];
+
+        for (int i=0; i < reviewsArray.length(); i++) {
+            JSONObject movieReviews = reviewsArray.getJSONObject(i);
+            String review = movieReviews.getString(MOVIE_REVIEW);
+            parsedReviews[i] = review;
+        }
+        return parsedReviews;
+
+    }
+
+
+
     //returns a Movie object for a given position in the movie string
     public static Movie getMovie(String movieJsonString, int position, Context context)
             throws JSONException{
-        int id;
-        String title;
-        String poster;
-        String backdrop;
-        String plot;
-        String rating;
-        String releaseDate;
 
         List<String> reviews;
         //some kind of movie trailer variable
@@ -117,12 +131,12 @@ public class MovieJsonUtils {
 
         //get reviews
 
-        id = movieData.getInt(MOVIE_ID);
-        title = movieData.getString(MOVIE_TITLE);
-        backdrop = "http://image.tmdb.org/t/p/" + "w500"+ movieData.getString(MOVIE_BACKDROP_URL);
-        plot = movieData.getString(MOVIE_PLOT);
-        rating = movieData.getString(MOVIE_RATING);
-        releaseDate = movieData.getString(MOVIE_RELEASE_DATE);
+        int id = movieData.getInt(MOVIE_ID);
+        String title = movieData.getString(MOVIE_TITLE);
+        String backdrop = "http://image.tmdb.org/t/p/" + "w500"+ movieData.getString(MOVIE_BACKDROP_URL);
+        String plot = movieData.getString(MOVIE_PLOT);
+        String rating = movieData.getString(MOVIE_RATING);
+        String releaseDate = movieData.getString(MOVIE_RELEASE_DATE);
 
         //reviews = reviewData.getString(
 

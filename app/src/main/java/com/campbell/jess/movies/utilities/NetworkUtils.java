@@ -42,7 +42,7 @@ public final class NetworkUtils {
         }
 
     }
-
+//TODO CONSOLIDATE BUILDURL METHODS
     /**
      * uses API_KEY provided by user above and urlbase to build a url to query movieDB api
      * @return url
@@ -59,12 +59,28 @@ public final class NetworkUtils {
         return url;
     }
 
-    public static URL buildReviewUrl(Context context) {
+    public static URL buildReviewUrl(Context context, int movie_id) {
         URL url = null;
-        String reviewBase = 
+        String review = "https://api.themoviedb.org/3/movie/"+String.valueOf(movie_id)+"/reviews?api_key=<<"+API_KEY+">>&language=en-US&page=1";
         try {
-            url = new URL()
+            url = new URL(review);
+        } catch (
+                MalformedURLException e) {
+            e.printStackTrace();
         }
+        return url;
+    }
+
+    public static URL buildVideoUrl(Context context, int movie_id) {
+        URL url = null;
+        String videos = "https://api.themoviedb.org/3/movie/"+String.valueOf(movie_id)+"/videos?api_key=<<"+API_KEY+">>&language=en-US&page=1";
+        try {
+            url = new URL(videos);
+        } catch (
+                MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url;
     }
 
     /**

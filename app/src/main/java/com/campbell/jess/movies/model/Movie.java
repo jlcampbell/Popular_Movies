@@ -8,6 +8,7 @@ public class Movie {
     private String plot;
     private String rating;
     private String releaseDate;
+    private String[] reviews;
 
     public Movie(int id, String title, String poster, String plot, String rating, String releaseDate){
         this.id = id;
@@ -16,6 +17,7 @@ public class Movie {
         this.plot = plot;
         this.rating = rating;
         this.releaseDate = releaseDate;
+
     }
 
     public int getId() {return id;}
@@ -25,4 +27,8 @@ public class Movie {
     public String getRating() {return rating;}
     public String getReleaseDate() {return releaseDate;}
 
+    public void setReviews(String[] reviews){
+        this.reviews = reviews;
+    }
+    public String[] getReviews() {return reviews;}
 }

@@ -86,12 +86,9 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         protected Movie doInBackground(String... strings) {
             URL movieRequestUrl = NetworkUtils.buildUrl(getApplicationContext());
-            URL movieReviewRequestUrl = NetworkUtils.buildReviewUrl()
-
             try {
                 //try to get http response
                 String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
-                List<String> jsonMovieReviewResponse
                 return MovieJsonUtils.getMovie(jsonMovieResponse, position, getApplicationContext());
             } catch (Exception e) {
                 e.printStackTrace();
@@ -104,9 +101,33 @@ public class DetailActivity extends AppCompatActivity {
             if (movie != null) {
                 Movie mMovie = movie;
                 gMovie = movie;
-                populateUI(mMovie);
+                new FetchReviewsTask().execute();
             }
 
+        }
+    }
+
+    public class FetchReviewsTask extends AsyncTask<String, Void, String[]> {
+
+        @Override
+        protected String[] doInBackground(String... strings) {
+            URL reviewRequestUrl = NetworkUtils.buildReviewUrl(getApplicationContext(), gMovie.getId());
+            try {
+                String jsonMovieReviewResponse = NetworkUtils.getResponseFromHttpUrl(reviewRequestUrl);
+                String[] reviews = MovieJsonUtils.getReviewsFromJson(jsonMovieReviewResponse, getApplicationContext());
+                return reviews;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String[] reviews){
+            if (reviews != null){
+                gMovie.setReviews(reviews);
+                populateUI(gMovie);
+            }
         }
     }
 
@@ -116,5 +137,7 @@ public class DetailActivity extends AppCompatActivity {
         tv_overview.setText(movie.getPlot());
         tv_rating.setText(movie.getRating());
         tv_releaseDate.setText(movie.getReleaseDate());
+
+        //TODO add reviews here
     }
     }

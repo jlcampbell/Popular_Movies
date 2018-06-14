@@ -20,6 +20,8 @@
 
     <string name="movie_release_date_key" translatable="false">release_date</string>
 
+    <string name="movie_review_key" translatable="false">content</string>
+
 
 
     <!-- used in NetworkUtils.java -->
