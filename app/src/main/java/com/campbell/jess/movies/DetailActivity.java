@@ -21,9 +21,6 @@ import java.net.URL;
 import java.util.List;
 
 public class DetailActivity extends AppCompatActivity {
-    //TODO add a favorite button
-    //TODO create a class AddMovieActivity.java
-    //TODO link AddMovieActivity to onclick of favorite button
 
 
     private int position;
@@ -31,6 +28,7 @@ public class DetailActivity extends AppCompatActivity {
     TextView tv_overview;
     TextView tv_releaseDate;
     TextView tv_rating;
+    TextView tv_reviews;
     ImageView iv_poster;
     Button btn_favorite;
 
@@ -57,6 +55,7 @@ public class DetailActivity extends AppCompatActivity {
         tv_releaseDate = findViewById(R.id.tv_releaseDate);
         tv_rating = findViewById(R.id.tv_rating);
         tv_overview = findViewById(R.id.tv_overview);
+        tv_reviews = findViewById(R.id.tv_reviews);
         iv_poster = findViewById(R.id.iv_poster);
 
         btn_favorite = findViewById(R.id.btn_favorite);
@@ -137,7 +136,10 @@ public class DetailActivity extends AppCompatActivity {
         tv_overview.setText(movie.getPlot());
         tv_rating.setText(movie.getRating());
         tv_releaseDate.setText(movie.getReleaseDate());
-
-        //TODO add reviews here
+        String[] reviews = movie.getReviews();
+        for (String review: reviews
+             ) {
+            tv_reviews.append(review + "\n");
+        }
     }
     }

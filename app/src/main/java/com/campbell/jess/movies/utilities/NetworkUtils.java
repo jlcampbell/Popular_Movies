@@ -61,7 +61,7 @@ public final class NetworkUtils {
 
     public static URL buildReviewUrl(Context context, int movie_id) {
         URL url = null;
-        String review = "https://api.themoviedb.org/3/movie/"+String.valueOf(movie_id)+"/reviews?api_key=<<"+API_KEY+">>&language=en-US&page=1";
+        String review = "https://api.themoviedb.org/3/movie/"+String.valueOf(movie_id)+"/reviews?api_key="+API_KEY+"&language=en-US&page=1";
         try {
             url = new URL(review);
         } catch (
