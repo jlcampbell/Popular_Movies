@@ -73,7 +73,7 @@ public final class NetworkUtils {
 
     public static URL buildVideoUrl(Context context, int movie_id) {
         URL url = null;
-        String videos = "https://api.themoviedb.org/3/movie/"+String.valueOf(movie_id)+"/videos?api_key=<<"+API_KEY+">>&language=en-US&page=1";
+        String videos = "https://api.themoviedb.org/3/movie/"+String.valueOf(movie_id)+"/videos?api_key="+API_KEY+"&language=en-US&page=1";
         try {
             url = new URL(videos);
         } catch (
