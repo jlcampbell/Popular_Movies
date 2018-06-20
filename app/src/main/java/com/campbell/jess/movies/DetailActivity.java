@@ -108,15 +108,18 @@ public class DetailActivity extends AppCompatActivity {
 
         }
     }
-
+//TODO combine reveiws and trailer requests into one api call
     public class FetchReviewsTask extends AsyncTask<String, Void, String[]> {
 
         @Override
         protected String[] doInBackground(String... strings) {
             URL reviewRequestUrl = NetworkUtils.buildReviewUrl(getApplicationContext(), gMovie.getId());
+            URL videoRequestUrl = NetworkUtils.buildVideoUrl(getApplicationContext(), gMovie.getId());
             try {
                 String jsonMovieReviewResponse = NetworkUtils.getResponseFromHttpUrl(reviewRequestUrl);
                 String[] reviews = MovieJsonUtils.getReviewsFromJson(jsonMovieReviewResponse, getApplicationContext());
+
+                String jsonTrailerMovieResponse = NetworkUtils.getResponseFromHttpUrl(videoRequestUrl);
                 return reviews;
             } catch (Exception e) {
                 e.printStackTrace();

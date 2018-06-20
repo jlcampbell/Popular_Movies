@@ -9,6 +9,7 @@ public class Movie {
     private String rating;
     private String releaseDate;
     private String[] reviews;
+    private String[] trailers;
 
     public Movie(int id, String title, String poster, String plot, String rating, String releaseDate){
         this.id = id;
@@ -31,4 +32,7 @@ public class Movie {
         this.reviews = reviews;
     }
     public String[] getReviews() {return reviews;}
+
+    public void setTrailers(String[] trailers) { this.trailers = trailers; }
+    public String[] getTrailers() {return trailers;}
 }
