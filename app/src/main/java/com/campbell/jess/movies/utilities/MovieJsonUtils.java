@@ -27,6 +27,7 @@ public class MovieJsonUtils {
     private static String MOVIE_RATING;
     private static String MOVIE_RELEASE_DATE;
     private static String MOVIE_REVIEW;
+    private static String MOVIE_TRAILER_ID;
 
 
     //method to get a ready to use JSONArray with entries for each movie from a json string
@@ -47,6 +48,8 @@ public class MovieJsonUtils {
         MOVIE_RELEASE_DATE = context.getString(R.string.movie_release_date_key);
 
         MOVIE_REVIEW = context.getString(R.string.movie_review_key);
+
+        MOVIE_TRAILER_ID = context.getApplicationContext().getString(R.string.movie_trailer_id_key);
 
 
 
@@ -112,6 +115,22 @@ public class MovieJsonUtils {
         }
         return parsedReviews;
 
+    }
+
+    public static String[] getTrailersFromJson(String trailerJsonString, Context context)
+        throws JSONException {
+
+        String[] parsedTrailers;
+
+        JSONArray trailersArray = getJsonArray(trailerJsonString, context);
+        parsedTrailers = new String[Objects.requireNonNull(trailersArray).length()];
+
+        for (int i=0; i<trailersArray.length(); i++) {
+            JSONObject movieTrailers = trailersArray.getJSONObject(i);
+            String trailer = movieTrailers.getString(MOVIE_TRAILER_ID);
+            parsedTrailers[i] = trailer;
+        }
+        return parsedTrailers;
     }
 
 

@@ -62,8 +62,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         mAppDatabase = AppDatabase.getInstance(this);
 
-        loadMovieDataFromRoom();
-        //loadMovieDataFromApi();
+        //loadMovieDataFromRoom();
+        loadMovieDataFromApi();
     }
 
     private void setupSharedPreferences() {

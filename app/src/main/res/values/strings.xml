@@ -5,7 +5,7 @@
 
     <string name="action_settings">Settings</string>
 
-    <!-- used in MovieJsonUtils.java -->
+    <!-- used in MovieJsonUtils.java  -->
     <string name="movie_id_key" translatable="false">id</string>
 
     <string name="movie_title_key" translatable="false">title</string>
@@ -21,6 +21,8 @@
     <string name="movie_release_date_key" translatable="false">release_date</string>
 
     <string name="movie_review_key" translatable="false">content</string>
+
+    <string name="movie_trailer_id_key" translatable="false">id</string>
 
 
 

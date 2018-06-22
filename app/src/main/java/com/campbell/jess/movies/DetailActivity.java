@@ -32,6 +32,8 @@ public class DetailActivity extends AppCompatActivity {
     TextView tv_releaseDate;
     TextView tv_rating;
     TextView tv_reviews;
+    TextView tv_trailers;
+
     ImageView iv_poster;
     Button btn_favorite;
 
@@ -59,6 +61,9 @@ public class DetailActivity extends AppCompatActivity {
         tv_rating = findViewById(R.id.tv_rating);
         tv_overview = findViewById(R.id.tv_overview);
         tv_reviews = findViewById(R.id.tv_reviews);
+        tv_trailers = findViewById(R.id.tv_trailer);
+
+
         iv_poster = findViewById(R.id.iv_poster);
 
         btn_favorite = findViewById(R.id.btn_favorite);
@@ -114,12 +119,11 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         protected String[] doInBackground(String... strings) {
             URL reviewRequestUrl = NetworkUtils.buildReviewUrl(getApplicationContext(), gMovie.getId());
-            URL videoRequestUrl = NetworkUtils.buildVideoUrl(getApplicationContext(), gMovie.getId());
             try {
                 String jsonMovieReviewResponse = NetworkUtils.getResponseFromHttpUrl(reviewRequestUrl);
                 String[] reviews = MovieJsonUtils.getReviewsFromJson(jsonMovieReviewResponse, getApplicationContext());
 
-                String jsonTrailerMovieResponse = NetworkUtils.getResponseFromHttpUrl(videoRequestUrl);
+                //String jsonTrailerMovieResponse = NetworkUtils.getResponseFromHttpUrl(videoRequestUrl);
                 return reviews;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -131,10 +135,42 @@ public class DetailActivity extends AppCompatActivity {
         protected void onPostExecute(String[] reviews){
             if (reviews != null){
                 gMovie.setReviews(reviews);
+                new FetchTrailersTask().execute();
+            }
+        }
+    }
+
+    public class FetchTrailersTask extends AsyncTask<String, Void, String[]> {
+
+        @Override
+        protected String[] doInBackground(String... strings) {
+            URL videoRequestUrl = NetworkUtils.buildVideoUrl(getApplicationContext(), gMovie.getId());
+            try {
+
+                //String[] reviews = MovieJsonUtils.getReviewsFromJson(jsonMovieReviewResponse, getApplicationContext());
+
+                String jsonTrailerMovieResponse = NetworkUtils.getResponseFromHttpUrl(videoRequestUrl);
+                String[] trailers = MovieJsonUtils.getTrailersFromJson(jsonTrailerMovieResponse, getApplicationContext());
+
+
+                return trailers;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String[] trailers){
+            if (trailers != null){
+                gMovie.setTrailers(trailers);
                 populateUI(gMovie);
             }
         }
     }
+
+
+
 
     private void populateUI(Movie movie){
         Picasso.get().load(movie.getPoster()).into(iv_poster);
@@ -142,10 +178,16 @@ public class DetailActivity extends AppCompatActivity {
         tv_overview.setText(movie.getPlot());
         tv_rating.setText(movie.getRating());
         tv_releaseDate.setText(movie.getReleaseDate());
+
         String[] reviews = movie.getReviews();
         for (String review: reviews
              ) {
             tv_reviews.append(review + "\n");
+        }
+
+        String[] trailers = movie.getTrailers();
+        for (String trailer: trailers){
+            tv_trailers.append(trailer + "\n");
         }
     }
 
