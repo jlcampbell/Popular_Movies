@@ -39,6 +39,9 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
     RecyclerView mRecyclerVeiwTrailers;
     TrailersAdapter mTrailersAdapter;
 
+    RecyclerView mRecyclerViewReviews;
+    ReviewsAdapter mReviewsAdapter;
+
     ImageView iv_poster;
     Button btn_favorite;
 
