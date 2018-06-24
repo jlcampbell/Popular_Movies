@@ -19,7 +19,6 @@ import java.util.Objects;
 /**
  * PosterRecyclerViewAdapter exposes a list of movie posters to the RecyclerView
  */
-//TODO refactor adapter to accept MovieEntry  as well
 public class PosterRecyclerViewAdapter extends RecyclerView.Adapter<PosterRecyclerViewAdapter.PosterRecyclerViewAdapterViewHolder> {
     String TAG = "ADAPTER";
 

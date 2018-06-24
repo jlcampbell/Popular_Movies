@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,7 +25,7 @@ import com.squareup.picasso.Picasso;
 import java.net.URL;
 import java.util.List;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements TrailersAdapter.TrailersAdapterOnClickHandler {
 
 
     private int position;
@@ -33,6 +35,9 @@ public class DetailActivity extends AppCompatActivity {
     TextView tv_rating;
     TextView tv_reviews;
     TextView tv_trailers;
+
+    RecyclerView mRecyclerVeiwTrailers;
+    TrailersAdapter mTrailersAdapter;
 
     ImageView iv_poster;
     Button btn_favorite;
@@ -47,6 +52,12 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         initViews();
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        mRecyclerVeiwTrailers.setLayoutManager(linearLayoutManager);
+        mRecyclerVeiwTrailers.setHasFixedSize(false);
+        mTrailersAdapter = new TrailersAdapter(this);
+        mRecyclerVeiwTrailers.setAdapter(mTrailersAdapter);
 
         mAppDatabase = AppDatabase.getInstance(getApplicationContext());
 
@@ -63,6 +74,7 @@ public class DetailActivity extends AppCompatActivity {
         tv_reviews = findViewById(R.id.tv_reviews);
         tv_trailers = findViewById(R.id.tv_trailer);
 
+        mRecyclerVeiwTrailers = findViewById(R.id.recyclerview_trailers);
 
         iv_poster = findViewById(R.id.iv_poster);
 
@@ -85,6 +97,12 @@ public class DetailActivity extends AppCompatActivity {
 
         mAppDatabase.movieDao().insertMovie(movieEntry);
         Toast mToast = Toast.makeText(this, title, Toast.LENGTH_SHORT );
+        mToast.show();
+    }
+
+    @Override
+    public void onClick(int position) {
+        Toast mToast = Toast.makeText(this, String.valueOf(position), Toast.LENGTH_SHORT);
         mToast.show();
     }
 
@@ -165,6 +183,7 @@ public class DetailActivity extends AppCompatActivity {
             if (trailers != null){
                 gMovie.setTrailers(trailers);
                 populateUI(gMovie);
+                mRecyclerVeiwTrailers.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -186,9 +205,10 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         String[] trailers = movie.getTrailers();
-        for (String trailer: trailers){
-            tv_trailers.append(trailer + "\n");
-        }
+        //for (String trailer: trailers){
+        //    tv_trailers.append(trailer + "\n");
+        //}
+        mTrailersAdapter.setTrailerIDs(trailers);
     }
 
     private void goToYouTube(Context context, String id){

@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
 
         mAppDatabase = AppDatabase.getInstance(this);
-
+//TODO THIS NEEDS TO BE FIXED
         //loadMovieDataFromRoom();
         loadMovieDataFromApi();
     }
@@ -96,8 +96,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         new FetchMovieTask().execute();
     }
 
-    //TODO refactor this temporary class- pass movieEntry list to the adapter,
-    // run in async thread
+    //TODO run in async thread
     private void loadMovieDataFromRoom() {
         showPosterDataView();
         String testPoster = mAppDatabase.movieDao().loadAllMovies().get(0).getPoster();
