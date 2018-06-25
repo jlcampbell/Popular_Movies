@@ -62,6 +62,12 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         mTrailersAdapter = new TrailersAdapter(this);
         mRecyclerVeiwTrailers.setAdapter(mTrailersAdapter);
 
+        LinearLayoutManager reviewLinearLayoutManager = new LinearLayoutManager(this);
+        mRecyclerViewReviews.setLayoutManager(reviewLinearLayoutManager);
+        mRecyclerViewReviews.setHasFixedSize(false);
+        mReviewsAdapter = new ReviewsAdapter();
+        mRecyclerViewReviews.setAdapter(mReviewsAdapter);
+
         mAppDatabase = AppDatabase.getInstance(getApplicationContext());
 
         Intent intentThatStartedActivity = getIntent();
@@ -78,6 +84,8 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         tv_trailers = findViewById(R.id.tv_trailer);
 
         mRecyclerVeiwTrailers = findViewById(R.id.recyclerview_trailers);
+
+        mRecyclerViewReviews = findViewById(R.id.recyclerview_reviews);
 
         iv_poster = findViewById(R.id.iv_poster);
 
@@ -186,6 +194,7 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
             if (trailers != null){
                 gMovie.setTrailers(trailers);
                 populateUI(gMovie);
+                mRecyclerViewReviews.setVisibility(View.VISIBLE);
                 mRecyclerVeiwTrailers.setVisibility(View.VISIBLE);
             }
         }
@@ -202,10 +211,11 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         tv_releaseDate.setText(movie.getReleaseDate());
 
         String[] reviews = movie.getReviews();
-        for (String review: reviews
-             ) {
-            tv_reviews.append(review + "\n");
-        }
+        //for (String review: reviews
+        //     ) {
+        //    tv_reviews.append(review + "\n");
+        //}
+        mReviewsAdapter.setReviewStrings(reviews);
 
         String[] trailers = movie.getTrailers();
         //for (String trailer: trailers){
