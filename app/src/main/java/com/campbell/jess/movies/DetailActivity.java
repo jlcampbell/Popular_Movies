@@ -62,11 +62,13 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         mTrailersAdapter = new TrailersAdapter(this);
         mRecyclerVeiwTrailers.setAdapter(mTrailersAdapter);
 
+
+        mReviewsAdapter = new ReviewsAdapter();
+        mRecyclerViewReviews.setAdapter(mReviewsAdapter);
         LinearLayoutManager reviewLinearLayoutManager = new LinearLayoutManager(this);
         mRecyclerViewReviews.setLayoutManager(reviewLinearLayoutManager);
         mRecyclerViewReviews.setHasFixedSize(false);
-        mReviewsAdapter = new ReviewsAdapter();
-        mRecyclerViewReviews.setAdapter(mReviewsAdapter);
+
 
         mAppDatabase = AppDatabase.getInstance(getApplicationContext());
 

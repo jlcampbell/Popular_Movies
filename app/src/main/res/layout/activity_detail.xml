@@ -10,8 +10,7 @@
     android:fillViewport="true"
     >
 
-<LinearLayout
-    android:orientation="vertical"
+<android.support.constraint.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context="com.campbell.jess.movies.DetailActivity">
@@ -111,7 +110,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview_trailers"
         android:layout_width="match_parent"
-        android:layout_height="600dp"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/tv_trailer"
         app:layout_constraintStart_toStartOf="@id/tv_title"
         ></android.support.v7.widget.RecyclerView>
@@ -124,5 +123,5 @@
         app:layout_constraintStart_toStartOf="@id/tv_title"
         ></android.support.v7.widget.RecyclerView>
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>
 </ScrollView>

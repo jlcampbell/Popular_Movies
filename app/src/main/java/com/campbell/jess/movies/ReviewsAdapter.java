@@ -45,7 +45,8 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsA
 
     @Override
     public int getItemCount() {
-        return 0;
+        if (null == mReviewStrings) return 0;
+        return mReviewStrings.length;
     }
 
     public void setReviewStrings(String[] reviewStrings){
