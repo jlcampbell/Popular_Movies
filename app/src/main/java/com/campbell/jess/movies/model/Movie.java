@@ -9,7 +9,9 @@ public class Movie {
     private String rating;
     private String releaseDate;
     private String[] reviews;
-    private String[] trailers;
+    private String[] trailerIds;
+    private String[] trailerTitles;
+
 
     public Movie(int id, String title, String poster, String plot, String rating, String releaseDate){
         this.id = id;
@@ -18,6 +20,8 @@ public class Movie {
         this.plot = plot;
         this.rating = rating;
         this.releaseDate = releaseDate;
+        this.trailerIds = trailerIds;
+        this.trailerTitles = trailerTitles;
 
     }
 
@@ -33,6 +37,9 @@ public class Movie {
     }
     public String[] getReviews() {return reviews;}
 
-    public void setTrailers(String[] trailers) { this.trailers = trailers; }
-    public String[] getTrailers() {return trailers;}
+    public void setTrailerIds(String[] trailers) { this.trailerIds = trailerIds; }
+    public String[] getTrailerIds() { return trailerIds; }
+
+    public void setTrailerTitles(String[] trailerTitles) { this.trailerTitles = trailerTitles; }
+    public String[] getTrailerTitles() { return trailerTitles; }
 }

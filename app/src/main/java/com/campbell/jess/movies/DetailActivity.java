@@ -33,8 +33,6 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
     TextView tv_overview;
     TextView tv_releaseDate;
     TextView tv_rating;
-    TextView tv_reviews;
-    TextView tv_trailers;
 
     RecyclerView mRecyclerVeiwTrailers;
     TrailersAdapter mTrailersAdapter;
@@ -45,7 +43,7 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
     ImageView iv_poster;
     Button btn_favorite;
 
-    Movie gMovie;
+    Movie mMovie;
 
     AppDatabase mAppDatabase;
 
@@ -82,8 +80,6 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         tv_releaseDate = findViewById(R.id.tv_releaseDate);
         tv_rating = findViewById(R.id.tv_rating);
         tv_overview = findViewById(R.id.tv_overview);
-        tv_reviews = findViewById(R.id.tv_reviews);
-        tv_trailers = findViewById(R.id.tv_trailer);
 
         mRecyclerVeiwTrailers = findViewById(R.id.recyclerview_trailers);
 
@@ -102,9 +98,9 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
     }
 
     private void onFavoriteButtonClicked(){
-        int id = gMovie.getId();
-        String title = gMovie.getTitle();
-        String poster = gMovie.getPoster();
+        int id = mMovie.getId();
+        String title = mMovie.getTitle();
+        String poster = mMovie.getPoster();
 
         MovieEntry movieEntry = new MovieEntry(id, title, poster);
 
@@ -137,8 +133,7 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         @Override
         protected void onPostExecute(Movie movie){
             if (movie != null) {
-                Movie mMovie = movie;
-                gMovie = movie;
+                mMovie = movie;
                 new FetchReviewsTask().execute();
             }
 
@@ -149,7 +144,7 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
 
         @Override
         protected String[] doInBackground(String... strings) {
-            URL reviewRequestUrl = NetworkUtils.buildReviewUrl(getApplicationContext(), gMovie.getId());
+            URL reviewRequestUrl = NetworkUtils.buildReviewUrl(getApplicationContext(), mMovie.getId());
             try {
                 String jsonMovieReviewResponse = NetworkUtils.getResponseFromHttpUrl(reviewRequestUrl);
                 String[] reviews = MovieJsonUtils.getReviewsFromJson(jsonMovieReviewResponse, getApplicationContext());
@@ -165,26 +160,26 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         @Override
         protected void onPostExecute(String[] reviews){
             if (reviews != null){
-                gMovie.setReviews(reviews);
+                mMovie.setReviews(reviews);
                 new FetchTrailersTask().execute();
             }
         }
     }
 
-    public class FetchTrailersTask extends AsyncTask<String, Void, String[]> {
+    public class FetchTrailersTask extends AsyncTask<String, Void, String> {
 
         @Override
-        protected String[] doInBackground(String... strings) {
-            URL videoRequestUrl = NetworkUtils.buildVideoUrl(getApplicationContext(), gMovie.getId());
+        protected String doInBackground(String... strings) {
+            URL videoRequestUrl = NetworkUtils.buildVideoUrl(getApplicationContext(), mMovie.getId());
             try {
 
                 //String[] reviews = MovieJsonUtils.getReviewsFromJson(jsonMovieReviewResponse, getApplicationContext());
 
                 String jsonTrailerMovieResponse = NetworkUtils.getResponseFromHttpUrl(videoRequestUrl);
-                String[] trailers = MovieJsonUtils.getTrailersFromJson(jsonTrailerMovieResponse, getApplicationContext());
 
 
-                return trailers;
+
+                return jsonTrailerMovieResponse;
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -192,13 +187,21 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         }
 
         @Override
-        protected void onPostExecute(String[] trailers){
-            if (trailers != null){
-                gMovie.setTrailers(trailers);
-                populateUI(gMovie);
+        protected void onPostExecute(String jsonTrailerMovieResponse){
+            String[] trailers;
+            String[] titles;
+            try {
+                trailers = MovieJsonUtils.getTrailersFromJson(jsonTrailerMovieResponse, getApplicationContext());
+                mMovie.setTrailerIds(trailers);
+                titles = MovieJsonUtils.getTrailerTitlesFromJson(jsonTrailerMovieResponse, getApplicationContext());
+                mMovie.setTrailerTitles(titles);
+                populateUI(mMovie);
                 mRecyclerViewReviews.setVisibility(View.VISIBLE);
                 mRecyclerVeiwTrailers.setVisibility(View.VISIBLE);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
         }
     }
 
@@ -213,17 +216,12 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         tv_releaseDate.setText(movie.getReleaseDate());
 
         String[] reviews = movie.getReviews();
-        //for (String review: reviews
-        //     ) {
-        //    tv_reviews.append(review + "\n");
-        //}
+
         mReviewsAdapter.setReviewStrings(reviews);
 
-        String[] trailers = movie.getTrailers();
-        //for (String trailer: trailers){
-        //    tv_trailers.append(trailer + "\n");
-        //}
-        mTrailersAdapter.setTrailerIDs(trailers);
+        String[] trailerIds = movie.getTrailerIds();
+        String[]trailerTitles = movie.getTrailerTitles();
+        mTrailersAdapter.setTrailerTitles(trailerTitles);
     }
 
     private void goToYouTube(Context context, String id){

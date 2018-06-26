@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.TrailerAdapterViewHolder> {
     private String[] trailerIDs;
+    private String[] trailerTitles;
 
     private final TrailersAdapterOnClickHandler mClickHandler;
 
@@ -52,18 +53,25 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Traile
     @Override
     public void onBindViewHolder(@NonNull TrailerAdapterViewHolder holder, int position) {
         TextView trailer = holder.mTrailer;
-        String idForThisMovie = trailerIDs[position];
-        trailer.setText(idForThisMovie);
+        //String idForThisMovie = trailerIDs[position];
+        String trailerTitle = trailerTitles[position];
+        trailer.setText(trailerTitle);
     }
 
     @Override
     public int getItemCount() {
-        if (null == trailerIDs) return 0;
-        return trailerIDs.length;
+        if (null == trailerTitles) return 0;
+        return trailerTitles.length;
     }
-
+/**
     public void setTrailerIDs(String[] iDs) {
         trailerIDs = iDs;
         notifyDataSetChanged();
     }
+**/
+    public void setTrailerTitles(String[] titles) {
+        trailerTitles = titles;
+        notifyDataSetChanged();
+    }
+
 }

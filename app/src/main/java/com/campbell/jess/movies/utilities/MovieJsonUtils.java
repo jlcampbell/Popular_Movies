@@ -28,6 +28,7 @@ public class MovieJsonUtils {
     private static String MOVIE_RELEASE_DATE;
     private static String MOVIE_REVIEW;
     private static String MOVIE_TRAILER_ID;
+    private static String MOVIE_TRAILER_TITLE;
 
 
     //method to get a ready to use JSONArray with entries for each movie from a json string
@@ -50,6 +51,8 @@ public class MovieJsonUtils {
         MOVIE_REVIEW = context.getString(R.string.movie_review_key);
 
         MOVIE_TRAILER_ID = context.getApplicationContext().getString(R.string.movie_trailer_id_key);
+
+        MOVIE_TRAILER_TITLE = context.getResources().getString(R.string.movie_trailer_title_key);
 
 
 
@@ -131,6 +134,22 @@ public class MovieJsonUtils {
             parsedTrailers[i] = trailer;
         }
         return parsedTrailers;
+    }
+
+    public static String[] getTrailerTitlesFromJson(String trailerTitleJsonString, Context context)
+        throws JSONException {
+
+        String[] parsedTrailerTitles;
+
+        JSONArray trailerTitlesArray = getJsonArray(trailerTitleJsonString, context);
+        parsedTrailerTitles = new String[Objects.requireNonNull(trailerTitlesArray).length()];
+
+        for (int i=0; i< parsedTrailerTitles.length; i++){
+            JSONObject trailerTitles = trailerTitlesArray.getJSONObject(i);
+            String trailerTitle = trailerTitles.getString(MOVIE_TRAILER_TITLE);
+            parsedTrailerTitles[i] = trailerTitle;
+        }
+        return parsedTrailerTitles;
     }
 
 
