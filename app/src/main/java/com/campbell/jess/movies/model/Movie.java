@@ -37,7 +37,7 @@ public class Movie {
     }
     public String[] getReviews() {return reviews;}
 
-    public void setTrailerIds(String[] trailers) { this.trailerIds = trailerIds; }
+    public void setTrailerIds(String[] trailers) { this.trailerIds = trailers; }
     public String[] getTrailerIds() { return trailerIds; }
 
     public void setTrailerTitles(String[] trailerTitles) { this.trailerTitles = trailerTitles; }

@@ -113,6 +113,8 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
     public void onClick(int position) {
         Toast mToast = Toast.makeText(this, String.valueOf(position), Toast.LENGTH_SHORT);
         mToast.show();
+        String id = mMovie.getTrailerIds()[position];
+        goToYouTube(this, id);
     }
 
     public class FetchDetailsTask extends AsyncTask<String, Void, Movie> {
