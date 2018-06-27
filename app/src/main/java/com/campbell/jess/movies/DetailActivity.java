@@ -114,7 +114,7 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         Toast mToast = Toast.makeText(this, String.valueOf(position), Toast.LENGTH_SHORT);
         mToast.show();
         String id = mMovie.getTrailerIds()[position];
-        goToYouTube(this, id);
+        goToYouTube(getApplicationContext(), id);
     }
 
     public class FetchDetailsTask extends AsyncTask<String, Void, Movie> {
@@ -207,9 +207,6 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         }
     }
 
-
-
-
     private void populateUI(Movie movie){
         Picasso.get().load(movie.getPoster()).into(iv_poster);
         tv_title.setText(movie.getTitle());
@@ -227,12 +224,8 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
     }
 
     private void goToYouTube(Context context, String id){
-        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
-        Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + id));
-        try {
-            context.startActivity(appIntent);
-        } catch (ActivityNotFoundException ex) {
-            context.startActivity(webIntent);
-        }
+        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
     }
     }
