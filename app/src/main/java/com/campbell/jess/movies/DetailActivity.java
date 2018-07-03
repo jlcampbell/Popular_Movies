@@ -1,5 +1,6 @@
 package com.campbell.jess.movies;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -47,6 +49,9 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
 
     AppDatabase mAppDatabase;
 
+    String TAG = this.getClass().getSimpleName();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +64,6 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         mRecyclerVeiwTrailers.setHasFixedSize(false);
         mTrailersAdapter = new TrailersAdapter(this);
         mRecyclerVeiwTrailers.setAdapter(mTrailersAdapter);
-
 
         mReviewsAdapter = new ReviewsAdapter();
         mRecyclerViewReviews.setAdapter(mReviewsAdapter);
@@ -101,12 +105,20 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         int id = mMovie.getId();
         String title = mMovie.getTitle();
         String poster = mMovie.getPoster();
+        String plot = mMovie.getPlot();
+        String rating = mMovie.getRating();
+        String releaseDate = mMovie.getReleaseDate();
 
-        MovieEntry movieEntry = new MovieEntry(id, title, poster);
+        final MovieEntry movieEntry = new MovieEntry(id, title, poster, plot, rating, releaseDate );
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mAppDatabase.movieDao().insertMovie(movieEntry);
+                Log.v(TAG, "inserting movie to db");
+                finish();
+            }
+        });
 
-        mAppDatabase.movieDao().insertMovie(movieEntry);
-        Toast mToast = Toast.makeText(this, title, Toast.LENGTH_SHORT );
-        mToast.show();
     }
 
     @Override
@@ -138,7 +150,6 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
                 mMovie = movie;
                 new FetchReviewsTask().execute();
             }
-
         }
     }
 //TODO combine reveiws and trailer requests into one api call
