@@ -1,4 +1,4 @@
-package com.campbell.jess.movies;
+package com.campbell.jess.movies.ui.settings;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,6 +8,8 @@ import android.support.v7.preference.PreferenceScreen;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+
+import com.campbell.jess.movies.R;
 
 
 //heavily referenced sunshine project from phase 1

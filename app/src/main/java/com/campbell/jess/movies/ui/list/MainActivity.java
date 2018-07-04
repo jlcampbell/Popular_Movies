@@ -1,4 +1,4 @@
-package com.campbell.jess.movies;
+package com.campbell.jess.movies.ui.list;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,9 +17,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.campbell.jess.movies.database.AppDatabase;
-import com.campbell.jess.movies.utilities.MovieJsonUtils;
-import com.campbell.jess.movies.utilities.NetworkUtils;
+import com.campbell.jess.movies.R;
+import com.campbell.jess.movies.ui.settings.SettingsActivity;
+import com.campbell.jess.movies.data.database.AppDatabase;
+import com.campbell.jess.movies.ui.detail.DetailActivity;
+import com.campbell.jess.movies.data.network.MovieJsonUtils;
+import com.campbell.jess.movies.data.network.NetworkUtils;
 
 import java.net.URL;
 

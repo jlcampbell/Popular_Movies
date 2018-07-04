@@ -1,4 +1,4 @@
-package com.campbell.jess.movies;
+package com.campbell.jess.movies.ui.list;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,11 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.campbell.jess.movies.R;
-import com.campbell.jess.movies.database.MovieEntry;
+import com.campbell.jess.movies.data.database.MovieEntry;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * PosterRecyclerViewAdapter exposes a list of movie posters to the RecyclerView

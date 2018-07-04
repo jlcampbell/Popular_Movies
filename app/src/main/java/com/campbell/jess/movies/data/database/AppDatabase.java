@@ -1,4 +1,4 @@
-package com.campbell.jess.movies.database;
+package com.campbell.jess.movies.data.database;
 
 
 import android.arch.persistence.db.SupportSQLiteOpenHelper;
@@ -7,7 +7,6 @@ import android.arch.persistence.room.DatabaseConfiguration;
 import android.arch.persistence.room.InvalidationTracker;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
-import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -26,12 +25,8 @@ public abstract class AppDatabase extends RoomDatabase {
             synchronized (LOCK) {
                 Log.d(LOG_TAG, "CREATING NEW DATABASE INSTANCE");
                 sInstance = Room.databaseBuilder(context.getApplicationContext(),
-                        AppDatabase.class, AppDatabase.DATABASE_NAME)
-                        //TODO CHANGE MAIN THREAD QUEURY
-                        .allowMainThreadQueries()
-                        //TODO CHANGE DATABASE MIGRATION ONCE OUT IN THE WILD
-                        .fallbackToDestructiveMigration()
-                        .build();
+                        AppDatabase.class, AppDatabase.DATABASE_NAME).build();
+                Log.d(LOG_TAG, "Made new database");
             }
         }
         Log.d(LOG_TAG, "Getting the database instance");

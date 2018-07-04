@@ -1,7 +1,5 @@
-package com.campbell.jess.movies;
+package com.campbell.jess.movies.ui.detail;
 
-import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -17,15 +15,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.campbell.jess.movies.database.AppDatabase;
-import com.campbell.jess.movies.database.MovieEntry;
-import com.campbell.jess.movies.utilities.MovieJsonUtils;
-import com.campbell.jess.movies.utilities.NetworkUtils;
+import com.campbell.jess.movies.AppExecutors;
+import com.campbell.jess.movies.R;
+import com.campbell.jess.movies.data.database.AppDatabase;
+import com.campbell.jess.movies.data.database.MovieEntry;
+import com.campbell.jess.movies.data.network.MovieJsonUtils;
+import com.campbell.jess.movies.data.network.NetworkUtils;
 import com.campbell.jess.movies.model.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
-import java.util.List;
 
 public class DetailActivity extends AppCompatActivity implements TrailersAdapter.TrailersAdapterOnClickHandler {
 

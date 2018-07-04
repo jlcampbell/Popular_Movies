@@ -1,8 +1,9 @@
-package com.campbell.jess.movies.utilities;
+package com.campbell.jess.movies.data.network;
 
 import android.content.Context;
 
 import com.campbell.jess.movies.R;
+import com.campbell.jess.movies.data.database.MovieEntry;
 import com.campbell.jess.movies.model.Movie;
 
 import org.json.JSONArray;
@@ -32,7 +33,7 @@ public class MovieJsonUtils {
 
 
     //method to get a ready to use JSONArray with entries for each movie from a json string
-    public static JSONArray getJsonArray(String movieJsonString, Context context) throws JSONException {
+    public static JSONArray getJsonArray(String movieJsonString) throws JSONException {
 
         MOVIE_ID = context.getString(R.string.movie_id_key);
 
@@ -81,13 +82,13 @@ public class MovieJsonUtils {
     }
 
     // method to get a string array of movie poster urls from the json string
-    public static String[] getMoviePostersFromJson(String movieJsonString, Context context)
+    public static String[] getMoviePostersFromJson(String movieJsonString)
         throws JSONException {
 
         String[] parsedMoviePosters;
 
         //getJsonArray returns array of movie json objects from "results" key
-        JSONArray resultsArray = getJsonArray(movieJsonString, context);
+        JSONArray resultsArray = getJsonArray(movieJsonString);
          parsedMoviePosters = new String[Objects.requireNonNull(resultsArray).length()];
 
         //iterate through each movie
@@ -103,12 +104,12 @@ public class MovieJsonUtils {
 
     }
 
-    public static String[] getReviewsFromJson(String reviewJsonString, Context context)
+    public static String[] getReviewsFromJson(String reviewJsonString)
         throws JSONException {
 
         String[] parsedReviews;
 
-        JSONArray reviewsArray = getJsonArray(reviewJsonString, context);
+        JSONArray reviewsArray = getJsonArray(reviewJsonString);
         parsedReviews = new String[Objects.requireNonNull(reviewsArray).length()];
 
         for (int i=0; i < reviewsArray.length(); i++) {
@@ -120,12 +121,12 @@ public class MovieJsonUtils {
 
     }
 
-    public static String[] getTrailersFromJson(String trailerJsonString, Context context)
+    public static String[] getTrailersFromJson(String trailerJsonString)
         throws JSONException {
 
         String[] parsedTrailers;
 
-        JSONArray trailersArray = getJsonArray(trailerJsonString, context);
+        JSONArray trailersArray = getJsonArray(trailerJsonString);
         parsedTrailers = new String[Objects.requireNonNull(trailersArray).length()];
 
         for (int i=0; i<trailersArray.length(); i++) {
@@ -136,12 +137,12 @@ public class MovieJsonUtils {
         return parsedTrailers;
     }
 
-    public static String[] getTrailerTitlesFromJson(String trailerTitleJsonString, Context context)
+    public static String[] getTrailerTitlesFromJson(String trailerTitleJsonString)
         throws JSONException {
 
         String[] parsedTrailerTitles;
 
-        JSONArray trailerTitlesArray = getJsonArray(trailerTitleJsonString, context);
+        JSONArray trailerTitlesArray = getJsonArray(trailerTitleJsonString);
         parsedTrailerTitles = new String[Objects.requireNonNull(trailerTitlesArray).length()];
 
         for (int i=0; i< parsedTrailerTitles.length; i++){
@@ -155,14 +156,14 @@ public class MovieJsonUtils {
 
 
     //returns a Movie object for a given position in the movie string
-    public static Movie getMovie(String movieJsonString, int position, Context context)
+    public static MovieEntry getMovie(String movieJsonString, int position)
             throws JSONException{
 
         List<String> reviews;
         //some kind of movie trailer variable
 
         //getJsonArray returns array of movie json objects from "results" key
-        JSONArray resultsArray = getJsonArray(movieJsonString, context);
+        JSONArray resultsArray = getJsonArray(movieJsonString);
 
         //movieData should be a JSONObject for a single movie
         JSONObject movieData = resultsArray.getJSONObject(position);
@@ -178,7 +179,50 @@ public class MovieJsonUtils {
 
         //reviews = reviewData.getString(
 
-        Movie movie = new Movie(id, title, backdrop, plot, rating, releaseDate);
+        MovieEntry movie = new MovieEntry(id, title, backdrop, plot, rating, releaseDate);
         return movie;
     }
+
+    //TODO getMovieEntryFromJson
+
+    //TODO getMovieEntryListFromJson
+
+    //TODO parseJSONstring
+
+    /**
+     * returns a list of movie entries
+     * @param movieJsonString
+     * @return
+     * @throws JSONException
+     */
+    public static MovieEntry[] getMovieEntries(final String movieJsonString) throws JSONException {
+        MovieEntry[] movieEntries;
+
+
+        String[] parsedMoviePosters;
+
+        //getJsonArray returns array of movie json objects from "results" key
+        JSONArray resultsArray = getJsonArray(movieJsonString);
+        movieEntries = new MovieEntry[Objects.requireNonNull(resultsArray).length()];
+
+        //iterate through each movie
+        for (int i=0; i < resultsArray.length(); i++) {
+            JSONObject movieData = resultsArray.getJSONObject(i);
+            int id = movieData.getInt(MOVIE_ID);
+            String title = movieData.getString(MOVIE_TITLE);
+            String backdrop = "http://image.tmdb.org/t/p/" + "w500"+ movieData.getString(MOVIE_BACKDROP_URL);
+            String plot = movieData.getString(MOVIE_PLOT);
+            String rating = movieData.getString(MOVIE_RATING);
+            String releaseDate = movieData.getString(MOVIE_RELEASE_DATE);
+
+            MovieEntry movieEntry = new MovieEntry(id, title, backdrop, plot, rating, releaseDate);
+
+            movieEntries[i] = movieEntry;
+
+        }
+        return movieEntries;
+
+
+    }
+
 }

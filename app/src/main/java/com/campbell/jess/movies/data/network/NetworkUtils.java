@@ -1,4 +1,4 @@
-package com.campbell.jess.movies.utilities;
+package com.campbell.jess.movies.data.network;
 
 import android.content.Context;
 

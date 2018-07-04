@@ -1,8 +1,10 @@
-package com.campbell.jess.movies;
+package com.campbell.jess.movies.ui.settings;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+
+import com.campbell.jess.movies.R;
 
 import java.util.Objects;
 
