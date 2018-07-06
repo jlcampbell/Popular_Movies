@@ -184,9 +184,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 
     @Override
-    public void onClick(int position) {
+    public void onClick(int movieId) {
         Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
-        intent.putExtra("position", position);
+        intent.putExtra("movieId", movieId);
         startActivity(intent);
     }
 

@@ -28,10 +28,8 @@ public class PosterRecyclerViewAdapter extends RecyclerView.Adapter<PosterRecycl
 
     private final PosterAdapterOnClickHandler mClickHandler;
 
-    private boolean dataFromApi = true;
-
     public interface PosterAdapterOnClickHandler {
-        void onClick(int position);
+        void onClick(int movieId);
     }
 
     public PosterRecyclerViewAdapter(PosterAdapterOnClickHandler clickHandler){
@@ -54,9 +52,10 @@ public class PosterRecyclerViewAdapter extends RecyclerView.Adapter<PosterRecycl
         @Override
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
+            int movieId = mMovieEntries.get(adapterPosition).getId();
 
-            //we can pass the id here instead of the position
-            mClickHandler.onClick(adapterPosition);
+            //mClickHandler.onClick(adapterPosition);
+            mClickHandler.onClick(movieId);
         }
     }
 
@@ -126,11 +125,11 @@ public class PosterRecyclerViewAdapter extends RecyclerView.Adapter<PosterRecycl
      * it is used when you have this list of thumbnails from api calls
      * @param thumbPaths The new thumbnails to display
      */
-    public void setmThumbPaths(String[] thumbPaths) {
-        mThumbPaths = thumbPaths;
-        dataFromApi = true;
-        notifyDataSetChanged();
-    }
+    //public void setmThumbPaths(String[] thumbPaths) {
+      //  mThumbPaths = thumbPaths;
+        //dataFromApi = true;
+        //notifyDataSetChanged();
+    //}
 
     /**
      * This method is used to set poster urls directly from movieEntry from room db
@@ -138,7 +137,7 @@ public class PosterRecyclerViewAdapter extends RecyclerView.Adapter<PosterRecycl
      */
     public void setmMovieEntries(List<MovieEntry> movieEntries){
         Log.d(TAG, "setting movie entries in adapter");
-        dataFromApi = false;
+        //dataFromApi = false;
         String test = movieEntries.get(0).getTitle();
         Log.d(TAG, test);
 

@@ -29,7 +29,7 @@ import java.net.URL;
 public class DetailActivity extends AppCompatActivity implements TrailersAdapter.TrailersAdapterOnClickHandler {
 
 
-    private int position;
+    private int mMovieId;
     private TextView tv_title;
     TextView tv_overview;
     TextView tv_releaseDate;
@@ -74,7 +74,7 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         mAppDatabase = AppDatabase.getInstance(getApplicationContext());
 
         Intent intentThatStartedActivity = getIntent();
-        position = intentThatStartedActivity.getIntExtra("position", 0);
+        mMovieId = intentThatStartedActivity.getIntExtra("movieId", 0);
        // new FetchDetailsTask().execute();
     }
 
