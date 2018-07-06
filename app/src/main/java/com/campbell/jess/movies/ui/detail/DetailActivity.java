@@ -75,7 +75,7 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
 
         Intent intentThatStartedActivity = getIntent();
         position = intentThatStartedActivity.getIntExtra("position", 0);
-        new FetchDetailsTask().execute();
+       // new FetchDetailsTask().execute();
     }
 
     private void initViews(){
@@ -125,9 +125,9 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         Toast mToast = Toast.makeText(this, String.valueOf(position), Toast.LENGTH_SHORT);
         mToast.show();
         String id = mMovie.getTrailerIds()[position];
-        goToYouTube(getApplicationContext(), id);
+  //      goToYouTube(getApplicationContext(), id);
     }
-
+/**
     public class FetchDetailsTask extends AsyncTask<String, Void, Movie> {
 
         @Override
@@ -237,5 +237,5 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
-    }
+    } **/
     }

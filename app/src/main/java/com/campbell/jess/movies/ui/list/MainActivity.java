@@ -1,16 +1,21 @@
 package com.campbell.jess.movies.ui.list;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
+import android.support.annotation.Nullable;
 import android.support.v7.preference.PreferenceManager;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,6 +23,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.campbell.jess.movies.R;
+import com.campbell.jess.movies.Utilities.InjectorUtils;
+import com.campbell.jess.movies.data.database.MovieEntry;
 import com.campbell.jess.movies.ui.settings.SettingsActivity;
 import com.campbell.jess.movies.data.database.AppDatabase;
 import com.campbell.jess.movies.ui.detail.DetailActivity;
@@ -25,6 +32,7 @@ import com.campbell.jess.movies.data.network.MovieJsonUtils;
 import com.campbell.jess.movies.data.network.NetworkUtils;
 
 import java.net.URL;
+import java.util.List;
 
 
 /**
@@ -41,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private PosterRecyclerViewAdapter mRecyclerViewAdapter;
     private AppDatabase mAppDatabase;
 
+    private MainActivityViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,22 +61,35 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         setupSharedPreferences();
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_posters);
-
         GridLayoutManager gridLayoutManager
                 = new GridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(gridLayoutManager);
-
         mRecyclerView.setHasFixedSize(false);
-
         mRecyclerViewAdapter = new PosterRecyclerViewAdapter(this);
-
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
 
         mAppDatabase = AppDatabase.getInstance(this);
 //TODO THIS NEEDS TO BE FIXED
-        //loadMovieDataFromRoom();
-        loadMovieDataFromApi();
+
+        MainActivityViewModelFactory factory = InjectorUtils.provideMainActivityViewModelFactory(this.getApplicationContext());
+        Log.d(TAG, "onCreate: provided factory");
+        mViewModel = ViewModelProviders.of(this, factory).get(MainActivityViewModel.class);
+        Log.d(TAG, "onCreate: created view model");
+        loadMovieDataFromRoom();
+        //setupViewModel();
     }
+
+    private void setupViewModel(){
+        MainActivityViewModel viewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
+        viewModel.getMovies().observe(this, new Observer<List<MovieEntry>>() {
+            @Override
+            public void onChanged(@Nullable List<MovieEntry> movieEntries) {
+                Log.d(TAG, "updating grid of movies from livedata in viewmodel");
+                mRecyclerViewAdapter.setmMovieEntries(movieEntries);
+            }
+        });
+    }
+
 
     private void setupSharedPreferences() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -95,16 +117,26 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 
 
+    /**
+     *
     private void loadMovieDataFromApi() {
         new FetchMovieTask().execute();
     }
+**/
 
     //TODO run in async thread
     private void loadMovieDataFromRoom() {
-        showPosterDataView();
-        String testPoster = mAppDatabase.movieDao().loadAllMovies().get(0).getPoster();
-        Toast.makeText(context, testPoster, Toast.LENGTH_SHORT).show();
-        mRecyclerViewAdapter.setmMovieEntries(mAppDatabase.movieDao().loadAllMovies());
+        Log.d(TAG, "loadMovieDataFromRoom: putting observer in place");
+        final Observer<List<MovieEntry>> movieObserver= new Observer<List<MovieEntry>>(){
+            
+            @Override
+            public void onChanged(@Nullable final List<MovieEntry> listLiveData) {
+                mRecyclerViewAdapter.setmMovieEntries(listLiveData);
+                if (listLiveData != null && listLiveData.size() != 0) showPosterDataView();
+            }
+        };
+
+        mViewModel.getMovies().observe(this, movieObserver);
     }
 
     @Override
@@ -116,11 +148,16 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 //load posters from favorites database
 
 
-                loadMovieDataFromRoom();
+                //loadMovieDataFromRoom();
+                setupViewModel();
+
             } else {
                 // if sort equals popularity or rating
                 NetworkUtils.setUrlBase(sort, this);
-                loadMovieDataFromApi();
+                //loadMovieDataFromApi();
+                //loadMovieDataFromRoom();
+                setupViewModel();
+
             }
         }
     }
@@ -153,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         startActivity(intent);
     }
 
-
+/**
     public class FetchMovieTask extends AsyncTask<String, Void, String[]> {
 
         @Override
@@ -176,5 +213,5 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             }
         }
     }
-
+**/
 }

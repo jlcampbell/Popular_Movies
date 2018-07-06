@@ -33,7 +33,8 @@ public class MovieJsonUtils {
 
 
     //method to get a ready to use JSONArray with entries for each movie from a json string
-    public static JSONArray getJsonArray(String movieJsonString) throws JSONException {
+
+    public static JSONArray getJsonArray(String movieJsonString, Context context) throws JSONException {
 
         MOVIE_ID = context.getString(R.string.movie_id_key);
 
@@ -62,6 +63,7 @@ public class MovieJsonUtils {
         JSONObject movieJson = new JSONObject(movieJsonString);
 
         /* if there is an error */
+
         if (movieJson.has(MOVIE_MESSAGE_CODE)) {
             int errorCode = movieJson.getInt(MOVIE_MESSAGE_CODE);
 
@@ -70,10 +72,10 @@ public class MovieJsonUtils {
                         .HTTP_OK:
                     break;
                 case HttpURLConnection.HTTP_NOT_FOUND:
-                    /* Location invalid */
+
                     return null;
                 default:
-                    /* server down */
+
                     return null;
             }
         }
@@ -82,6 +84,7 @@ public class MovieJsonUtils {
     }
 
     // method to get a string array of movie poster urls from the json string
+    /**
     public static String[] getMoviePostersFromJson(String movieJsonString)
         throws JSONException {
 
@@ -152,18 +155,18 @@ public class MovieJsonUtils {
         }
         return parsedTrailerTitles;
     }
-
+**/
 
 
     //returns a Movie object for a given position in the movie string
-    public static MovieEntry getMovie(String movieJsonString, int position)
+    public static MovieEntry getMovie(String movieJsonString, int position, Context context)
             throws JSONException{
 
         List<String> reviews;
         //some kind of movie trailer variable
 
         //getJsonArray returns array of movie json objects from "results" key
-        JSONArray resultsArray = getJsonArray(movieJsonString);
+        JSONArray resultsArray = getJsonArray(movieJsonString, context);
 
         //movieData should be a JSONObject for a single movie
         JSONObject movieData = resultsArray.getJSONObject(position);
@@ -195,14 +198,15 @@ public class MovieJsonUtils {
      * @return
      * @throws JSONException
      */
-    public static MovieEntry[] getMovieEntries(final String movieJsonString) throws JSONException {
-        MovieEntry[] movieEntries;
 
+    public static MovieEntry[] getMovieEntries(String movieJsonString, Context context) throws JSONException {
+
+        MovieEntry[] movieEntries;
 
         String[] parsedMoviePosters;
 
         //getJsonArray returns array of movie json objects from "results" key
-        JSONArray resultsArray = getJsonArray(movieJsonString);
+        JSONArray resultsArray = getJsonArray(movieJsonString, context);
         movieEntries = new MovieEntry[Objects.requireNonNull(resultsArray).length()];
 
         //iterate through each movie

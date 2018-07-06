@@ -11,7 +11,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-@Database(entities = {MovieEntry.class}, version = 3, exportSchema = false)
+@Database(entities = {MovieEntry.class}, version = 4, exportSchema = false)
 
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -25,7 +25,9 @@ public abstract class AppDatabase extends RoomDatabase {
             synchronized (LOCK) {
                 Log.d(LOG_TAG, "CREATING NEW DATABASE INSTANCE");
                 sInstance = Room.databaseBuilder(context.getApplicationContext(),
-                        AppDatabase.class, AppDatabase.DATABASE_NAME).build();
+                        AppDatabase.class, AppDatabase.DATABASE_NAME)
+                        .fallbackToDestructiveMigration()
+                        .build();
                 Log.d(LOG_TAG, "Made new database");
             }
         }

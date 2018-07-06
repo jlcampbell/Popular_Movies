@@ -20,7 +20,7 @@ import java.util.List;
 public interface MovieDao {
 
     @Query("SELECT * FROM movies ORDER BY id")
-    List<MovieEntry> loadAllMovies();
+    LiveData<List<MovieEntry>> loadAllMovies();
 
 
     //method for selecting popular movie list only
@@ -30,7 +30,7 @@ public interface MovieDao {
     //method for selecting favorite movies only
 
     //gets movie details for a single movie
-    @Query("SELECT * FROM movies WHERE id = id")
+    @Query("SELECT * FROM movies WHERE id = :id")
     LiveData<MovieEntry> getMovieById(int id);
 
     @Insert

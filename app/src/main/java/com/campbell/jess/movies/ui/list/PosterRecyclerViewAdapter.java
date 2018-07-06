@@ -1,5 +1,6 @@
 package com.campbell.jess.movies.ui.list;
 
+import android.arch.lifecycle.LiveData;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +20,7 @@ import java.util.List;
  * PosterRecyclerViewAdapter exposes a list of movie posters to the RecyclerView
  */
 public class PosterRecyclerViewAdapter extends RecyclerView.Adapter<PosterRecyclerViewAdapter.PosterRecyclerViewAdapterViewHolder> {
-    String TAG = "ADAPTER";
+    private static String TAG = "ADAPTER";
 
     private String[] mThumbPaths;
 
@@ -53,6 +54,8 @@ public class PosterRecyclerViewAdapter extends RecyclerView.Adapter<PosterRecycl
         @Override
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
+
+            //we can pass the id here instead of the position
             mClickHandler.onClick(adapterPosition);
         }
     }
@@ -83,37 +86,39 @@ public class PosterRecyclerViewAdapter extends RecyclerView.Adapter<PosterRecycl
 
     @Override
     public void onBindViewHolder(@NonNull PosterRecyclerViewAdapterViewHolder viewHolder, int position) {
-
+        Log.d(TAG, "onBindViewHolder: on bind view holder");
         //initialize image view
         ImageView imageView = viewHolder.mMoviePoster;
         String posterUrlForThisMovie;
 
         //if data comes from api
-        if (dataFromApi){
-            posterUrlForThisMovie = mThumbPaths[position];
+       // if (dataFromApi){
+         //   posterUrlForThisMovie = mThumbPaths[position];
             //load url
-            Picasso.get().load(posterUrlForThisMovie).into(imageView);
-        }
+           // Picasso.get().load(posterUrlForThisMovie).into(imageView);
+        //}
 
         //if data comes from favorites db
-        else {
+        //else {
             try {
 
                 MovieEntry movieEntry = mMovieEntries.get(position);
                 posterUrlForThisMovie = movieEntry.getPoster();
+                Log.d(TAG, "onBindViewHolder: "+posterUrlForThisMovie);
                 //load url
                 Picasso.get().load(posterUrlForThisMovie).into(imageView);
             } catch (IndexOutOfBoundsException e){
                 Log.e(TAG, e.toString());
             }
-            }
+          //  }
 
     }
 
     @Override
     public int getItemCount() {
-        if (null == mThumbPaths) return 0;
-        return mThumbPaths.length;
+        Log.d(TAG, "getItemCount: view holder");
+        if (null == mMovieEntries) return 0;
+        return mMovieEntries.size();
     }
 
     /**
@@ -132,7 +137,11 @@ public class PosterRecyclerViewAdapter extends RecyclerView.Adapter<PosterRecycl
      *
      */
     public void setmMovieEntries(List<MovieEntry> movieEntries){
+        Log.d(TAG, "setting movie entries in adapter");
         dataFromApi = false;
+        String test = movieEntries.get(0).getTitle();
+        Log.d(TAG, test);
+
         mMovieEntries = movieEntries;
         notifyDataSetChanged();
     }

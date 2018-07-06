@@ -9,6 +9,8 @@ import com.campbell.jess.movies.data.database.MovieDao;
 import com.campbell.jess.movies.data.database.MovieEntry;
 import com.campbell.jess.movies.data.network.MovieNetworkDataSource;
 
+import java.util.List;
+
 /**
  * Created by jlcampbell on 7/4/2018.
  */
@@ -34,6 +36,8 @@ public class MoviesRepository {
                 @Override
                 public void run() {
                     mMovieDao.bulkInsert(newMovies);
+                    String test = newMovies[0].getTitle();
+                    Log.d(LOG_TAG, test );
                 }
             });
         });
@@ -50,12 +54,33 @@ public class MoviesRepository {
         return sInstance;
     }
 
-    //TODO initialize data needs to incorporate a daily update of the data, not just update it everytime it is called
 
     private synchronized void initializeData() {
+//TODO initialize data needs to incorporate a daily update of the data, not just update it everytime it is called
+        mExecutors.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mMovieNetworkDataSource.fetchPopularMovies();
+            }
+        });
+        mInitialized = true;
 
     }
 
+    /*
+    database operations
+     */
+
+
+    public LiveData<List<MovieEntry>> getMovies() {
+        initializeData();
+        return mMovieDao.loadAllMovies();
+    }
+
+    public LiveData<MovieEntry> getMovieById(int id) {
+        initializeData();
+        return mMovieDao.getMovieById(id);
+    }
 
 }
 

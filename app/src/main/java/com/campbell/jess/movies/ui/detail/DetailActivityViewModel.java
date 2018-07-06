@@ -3,6 +3,7 @@ package com.campbell.jess.movies.ui.detail;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
+import com.campbell.jess.movies.data.MoviesRepository;
 import com.campbell.jess.movies.data.database.MovieEntry;
 
 /**
@@ -15,7 +16,13 @@ public class DetailActivityViewModel extends ViewModel {
     private final LiveData<MovieEntry> mMovie;
 
     private final int mMovieId;
-    private final MovieRepository mRepository;
+    private final MoviesRepository mRepository;
 
-    public DetailActivityViewModel()
+    public DetailActivityViewModel(MoviesRepository repository, int movieId){
+        mRepository = repository;
+        mMovieId = movieId;
+        mMovie = mRepository.getMovieById(mMovieId);
+    }
+
+    public LiveData<MovieEntry> getMovie() { return mMovie; }
 }

@@ -39,11 +39,15 @@ public class MovieNetworkDataSource {
      * Get the singleton for this class
      */
     public static MovieNetworkDataSource getsInstance(Context context, AppExecutors executors) {
+        Log.d(LOG_TAG, "getting instance");
         if (sInstance == null) {
             synchronized (LOCK) {
                 sInstance = new MovieNetworkDataSource(context.getApplicationContext(), executors);
                 Log.d(LOG_TAG, "made new network data source");
             }
+        }
+        if (sInstance != null) {
+            Log.d(LOG_TAG, "sInstance not null");
         }
         return sInstance;
     }
@@ -63,7 +67,7 @@ public class MovieNetworkDataSource {
     /**
      * gets the newest movies
      */
-    void fetchMovies(){
+    public void fetchMovies(){
         mExecutors.networkIO().execute(new Runnable() {
             @Override
             public void run() {
@@ -72,7 +76,30 @@ public class MovieNetworkDataSource {
                     URL movieRequestUrl = NetworkUtils.buildUrl(mContext);
 
                     String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
-                    MovieEntry[] movieEntries = MovieJsonUtils.getMovieEntries(jsonMovieResponse);
+                    MovieEntry[] movieEntries = MovieJsonUtils.getMovieEntries(jsonMovieResponse, mContext);
+
+                    if (movieEntries != null) {
+                        mDownloadedMovies.postValue(movieEntries);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                }
+            }
+        });
+
+
+    }
+    public void fetchPopularMovies(){
+        mExecutors.networkIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    URL movieRequestUrl = NetworkUtils.buildPopularUrl();
+
+                    String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
+                    MovieEntry[] movieEntries = MovieJsonUtils.getMovieEntries(jsonMovieResponse, mContext);
 
                     if (movieEntries != null) {
                         mDownloadedMovies.postValue(movieEntries);

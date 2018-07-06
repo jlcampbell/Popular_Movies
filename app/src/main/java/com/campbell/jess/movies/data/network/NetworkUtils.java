@@ -42,6 +42,19 @@ public final class NetworkUtils {
         }
 
     }
+
+    public static URL buildPopularUrl() {
+        URL url = null;
+        try {
+            url = new URL("https://api.themoviedb.org/3/movie/popular?api_key="+API_KEY+"&language=en-US&page=1");
+            //url = new URL(urlBase + API_KEY + context.getString(R.string.url_end));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+
+    }
 //TODO CONSOLIDATE BUILDURL METHODS
     /**
      * uses API_KEY provided by user above and urlbase to build a url to query movieDB api
