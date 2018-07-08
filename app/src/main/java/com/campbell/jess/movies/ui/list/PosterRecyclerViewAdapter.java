@@ -22,7 +22,7 @@ import java.util.List;
 public class PosterRecyclerViewAdapter extends RecyclerView.Adapter<PosterRecyclerViewAdapter.PosterRecyclerViewAdapterViewHolder> {
     private static String TAG = "ADAPTER";
 
-    private String[] mThumbPaths;
+    //private String[] mThumbPaths;
 
     private List<MovieEntry> mMovieEntries;
 
@@ -132,14 +132,11 @@ public class PosterRecyclerViewAdapter extends RecyclerView.Adapter<PosterRecycl
     //}
 
     /**
-     * This method is used to set poster urls directly from movieEntry from room db
+     * This method is used in the main activity to set the list of movieEntries
      *
      */
     public void setmMovieEntries(List<MovieEntry> movieEntries){
         Log.d(TAG, "setting movie entries in adapter");
-        //dataFromApi = false;
-        String test = movieEntries.get(0).getTitle();
-        Log.d(TAG, test);
 
         mMovieEntries = movieEntries;
         notifyDataSetChanged();

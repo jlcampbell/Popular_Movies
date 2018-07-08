@@ -1,5 +1,7 @@
 package com.campbell.jess.movies.ui.detail;
 
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 
 import com.campbell.jess.movies.AppExecutors;
 import com.campbell.jess.movies.R;
+import com.campbell.jess.movies.Utilities.InjectorUtils;
 import com.campbell.jess.movies.data.database.AppDatabase;
 import com.campbell.jess.movies.data.database.MovieEntry;
 import com.campbell.jess.movies.data.network.MovieJsonUtils;
@@ -50,6 +53,8 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
 
     String TAG = this.getClass().getSimpleName();
 
+    private DetailActivityViewModel mViewModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,12 +63,14 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
 
         initViews();
 
+        //trailers adapter
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRecyclerVeiwTrailers.setLayoutManager(linearLayoutManager);
         mRecyclerVeiwTrailers.setHasFixedSize(false);
         mTrailersAdapter = new TrailersAdapter(this);
         mRecyclerVeiwTrailers.setAdapter(mTrailersAdapter);
 
+        //reviews adapter
         mReviewsAdapter = new ReviewsAdapter();
         mRecyclerViewReviews.setAdapter(mReviewsAdapter);
         LinearLayoutManager reviewLinearLayoutManager = new LinearLayoutManager(this);
@@ -71,12 +78,40 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         mRecyclerViewReviews.setHasFixedSize(false);
 
 
-        mAppDatabase = AppDatabase.getInstance(getApplicationContext());
+
+       // mAppDatabase = AppDatabase.getInstance(getApplicationContext());
 
         Intent intentThatStartedActivity = getIntent();
         mMovieId = intentThatStartedActivity.getIntExtra("movieId", 0);
+
+        DetailActivityViewModelFactory factory = InjectorUtils.provideDetailActivityViewModelFactory(this, mMovieId);
+        mViewModel = ViewModelProviders.of(this, factory).get(DetailActivityViewModel.class);
+
+        mViewModel.getMovie().observe(this, movieEntry -> {
+            if (movieEntry != null) populateUI(movieEntry);
+        });
        // new FetchDetailsTask().execute();
     }
+
+    private void populateUI(MovieEntry movie){
+        Picasso.get().load(movie.getPoster()).into(iv_poster);
+        tv_title.setText(movie.getTitle());
+        tv_overview.setText(movie.getPlot());
+        tv_rating.setText(movie.getRating());
+        tv_releaseDate.setText(movie.getReleaseDate());
+
+
+
+        /**
+        String[] reviews = movie.getReviews();
+        mReviewsAdapter.setReviewStrings(reviews);
+
+        String[] trailerIds = movie.getTrailerIds();
+        String[]trailerTitles = movie.getTrailerTitles();
+        mTrailersAdapter.setTrailerTitles(trailerTitles);
+    **/
+
+         }
 
     private void initViews(){
         tv_title = findViewById(R.id.tv_title);
@@ -215,22 +250,6 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
             }
 
         }
-    }
-
-    private void populateUI(Movie movie){
-        Picasso.get().load(movie.getPoster()).into(iv_poster);
-        tv_title.setText(movie.getTitle());
-        tv_overview.setText(movie.getPlot());
-        tv_rating.setText(movie.getRating());
-        tv_releaseDate.setText(movie.getReleaseDate());
-
-        String[] reviews = movie.getReviews();
-
-        mReviewsAdapter.setReviewStrings(reviews);
-
-        String[] trailerIds = movie.getTrailerIds();
-        String[]trailerTitles = movie.getTrailerTitles();
-        mTrailersAdapter.setTrailerTitles(trailerTitles);
     }
 
     private void goToYouTube(Context context, String id){

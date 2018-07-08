@@ -124,7 +124,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 **/
 
-    //TODO run in async thread
     private void loadMovieDataFromRoom() {
         Log.d(TAG, "loadMovieDataFromRoom: putting observer in place");
         final Observer<List<MovieEntry>> movieObserver= new Observer<List<MovieEntry>>(){
@@ -135,7 +134,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 if (listLiveData != null && listLiveData.size() != 0) showPosterDataView();
             }
         };
-
         mViewModel.getMovies().observe(this, movieObserver);
     }
 
@@ -146,18 +144,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             // if sort equals favorites
             if (sort.equals(context.getString(R.string.pref_sort_favorites))) {
                 //load posters from favorites database
-
-
                 //loadMovieDataFromRoom();
                 setupViewModel();
 
-            } else {
+            } else if (sort.equals(context.getString(R.string.pref_sort_popularity))){
                 // if sort equals popularity or rating
-                NetworkUtils.setUrlBase(sort, this);
+                //NetworkUtils.setUrlBase(sort, this);
                 //loadMovieDataFromApi();
                 //loadMovieDataFromRoom();
                 setupViewModel();
-
+            } else if (sort.equals(context.getString(R.string.pref_sort_rating))){
+                setupViewModel();
             }
         }
     }

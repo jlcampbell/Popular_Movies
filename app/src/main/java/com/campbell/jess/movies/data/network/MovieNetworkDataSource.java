@@ -52,11 +52,12 @@ public class MovieNetworkDataSource {
         return sInstance;
     }
 
-    //returns popular movies as a livedata object
+    //returns popular movies as a livedata list of MovieEntries
     public LiveData<MovieEntry[]> getMovies() {
         return mDownloadedMovies;
     }
 
+    //returns high rated movies as a livedata list of MovieEntries
     public LiveData<MovieEntry[]> getHighRatedMovies() {
         return mDownloadedMovies;
     }

@@ -7,6 +7,7 @@ import com.campbell.jess.movies.AppExecutors;
 import com.campbell.jess.movies.data.MoviesRepository;
 import com.campbell.jess.movies.data.database.AppDatabase;
 import com.campbell.jess.movies.data.network.MovieNetworkDataSource;
+import com.campbell.jess.movies.ui.detail.DetailActivityViewModelFactory;
 import com.campbell.jess.movies.ui.list.MainActivityViewModelFactory;
 
 /**
@@ -28,6 +29,11 @@ public class InjectorUtils {
         MoviesRepository moviesRepository = provideRepository(context.getApplicationContext());
         Log.d(log_tag, "will attempt to return view model factory");
         return new MainActivityViewModelFactory(moviesRepository);
+    }
+
+    public static DetailActivityViewModelFactory provideDetailActivityViewModelFactory(Context context, int id) {
+        MoviesRepository moviesRepository = provideRepository(context.getApplicationContext());
+        return new DetailActivityViewModelFactory(moviesRepository, id);
     }
 
 }
