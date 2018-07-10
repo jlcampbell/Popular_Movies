@@ -32,7 +32,9 @@ public class MovieNetworkDataSource {
     // LiveData storing the latest downloaded movies
     private final MutableLiveData<MovieEntry[]> mDownloadedMovies;
     private final MutableLiveData<MovieEntry[]> mRatedMovies;
+    private final MutableLiveData<RatedMovieEntry[]> mRatedMovieList;
     private final MutableLiveData<MovieEntry[]> mPopularMovies;
+    private final MutableLiveData<PopularMovieEntry[]> mPopularMovieList;
     private final AppExecutors mExecutors;
 
     private MovieNetworkDataSource(Context context, AppExecutors executors) {
@@ -40,7 +42,9 @@ public class MovieNetworkDataSource {
         mExecutors = executors;
         mDownloadedMovies = new MutableLiveData<MovieEntry[]>();
         mRatedMovies = new MutableLiveData<MovieEntry[]>();
+        mRatedMovieList = new MutableLiveData<RatedMovieEntry[]>();
         mPopularMovies = new MutableLiveData<MovieEntry[]>();
+        mPopularMovieList = new MutableLiveData<PopularMovieEntry[]>();
     }
 
     /**
@@ -65,12 +69,16 @@ public class MovieNetworkDataSource {
         return mDownloadedMovies;
     }
 
-    public LiveData<PopularMovieEntry[]> getPopularMovies() { return mPopularMovies; }
+    public LiveData<MovieEntry[]> getPopularMovies() { return mPopularMovies; }
+
+    public LiveData<PopularMovieEntry[]> getPopularMovieList() { return mPopularMovieList; }
 
     //returns high rated movies as a livedata list of MovieEntries
-    public LiveData<RatedMovieEntry[]> getHighRatedMovies() {
+    public LiveData<MovieEntry[]> getHighRatedMovies() {
         return mRatedMovies;
     }
+
+    public LiveData<RatedMovieEntry[]> getRatedMovieList() { return mRatedMovieList; }
 
     //TODO create fetch movie service
     //public void startFetchMovieService()
@@ -112,10 +120,14 @@ public class MovieNetworkDataSource {
 
                     String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
                     MovieEntry[] movieEntries = MovieJsonUtils.getMovieEntries(jsonMovieResponse, mContext);
+                    PopularMovieEntry[] popularMovieEntries = MovieJsonUtils.getPopularMovieIds(jsonMovieResponse, mContext);
 
                     if (movieEntries != null) {
                         //mDownloadedMovies.postValue(movieEntries);
                         mPopularMovies.postValue(movieEntries);
+                    }
+                    if (popularMovieEntries != null) {
+                        mPopularMovieList.postValue(popularMovieEntries);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -135,10 +147,14 @@ public class MovieNetworkDataSource {
 
                     String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
                     MovieEntry[] movieEntries = MovieJsonUtils.getMovieEntries(jsonMovieResponse, mContext);
+                    RatedMovieEntry[] ratedMovieEntries = MovieJsonUtils.getRatedMovieIds(jsonMovieResponse, mContext);
 
                     if (movieEntries != null) {
                         //mDownloadedMovies.postValue(movieEntries);
                         mRatedMovies.postValue(movieEntries);
+                    }
+                    if (ratedMovieEntries != null) {
+                        mRatedMovieList.postValue(ratedMovieEntries);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

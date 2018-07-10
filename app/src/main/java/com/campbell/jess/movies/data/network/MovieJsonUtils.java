@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.campbell.jess.movies.R;
 import com.campbell.jess.movies.data.database.MovieEntry;
+import com.campbell.jess.movies.data.database.PopularMovieEntry;
+import com.campbell.jess.movies.data.database.RatedMovieEntry;
 import com.campbell.jess.movies.model.Movie;
 
 import org.json.JSONArray;
@@ -203,8 +205,6 @@ public class MovieJsonUtils {
 
         MovieEntry[] movieEntries;
 
-        String[] parsedMoviePosters;
-
         //getJsonArray returns array of movie json objects from "results" key
         JSONArray resultsArray = getJsonArray(movieJsonString, context);
         movieEntries = new MovieEntry[Objects.requireNonNull(resultsArray).length()];
@@ -228,5 +228,38 @@ public class MovieJsonUtils {
 
 
     }
+
+    public static PopularMovieEntry[] getPopularMovieIds(String movieJsonString, Context context) throws JSONException {
+        PopularMovieEntry[] popularMovieEntries;
+        //getJsonArray returns array of movie json objects from "results" key
+        JSONArray resultsArray = getJsonArray(movieJsonString, context);
+        popularMovieEntries = new PopularMovieEntry[Objects.requireNonNull(resultsArray).length()];
+
+        for (int i = 0; i < resultsArray.length(); i++) {
+            JSONObject movieData = resultsArray.getJSONObject(i);
+            int id = movieData.getInt(MOVIE_ID);
+
+            PopularMovieEntry popularMovieEntry = new PopularMovieEntry(id);
+            popularMovieEntries[i] = popularMovieEntry;
+        }
+    return popularMovieEntries;
+    }
+
+    public static RatedMovieEntry[] getRatedMovieIds(String movieJsonString, Context context) throws JSONException {
+        RatedMovieEntry[] ratedMovieEntries;
+        //getJsonArray returns array of movie json objects from "results" key
+        JSONArray resultsArray = getJsonArray(movieJsonString, context);
+        ratedMovieEntries = new RatedMovieEntry[Objects.requireNonNull(resultsArray).length()];
+
+        for (int i = 0; i < resultsArray.length(); i++) {
+            JSONObject movieData = resultsArray.getJSONObject(i);
+            int id = movieData.getInt(MOVIE_ID);
+
+            RatedMovieEntry ratedMovieEntry = new RatedMovieEntry(id);
+            ratedMovieEntries[i] = ratedMovieEntry;
+        }
+        return ratedMovieEntries;
+    }
+
 
 }

@@ -75,10 +75,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         Log.d(TAG, "onCreate: provided factory");
         mViewModel = ViewModelProviders.of(this, factory).get(MainActivityViewModel.class);
         Log.d(TAG, "onCreate: created view model");
-        loadMovieDataFromRoom();
+        loadPopularMovieDataFromViewModel();
         //setupViewModel();
     }
-
+/**
     private void setupViewModel(){
         MainActivityViewModel viewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
         viewModel.getMovies().observe(this, new Observer<List<MovieEntry>>() {
@@ -89,6 +89,41 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             }
         });
     }
+
+    private void setupPopularViewModel(){
+        MainActivityViewModel viewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
+        viewModel.getPopularMovies().observe(this, new Observer<List<MovieEntry>>() {
+            @Override
+            public void onChanged(@Nullable List<MovieEntry> movieEntries) {
+                Log.d(TAG, "updating grid of movies from livedata in viewmodel");
+                mRecyclerViewAdapter.setmMovieEntries(movieEntries);
+            }
+        });
+    }
+     */
+    private void loadMovieDataFromViewModel() {
+        Log.d(TAG, "loadMovieDataFromRoom: putting observer in place");
+        final Observer<List<MovieEntry>> movieObserver= listLiveData -> {
+            mRecyclerViewAdapter.setmMovieEntries(listLiveData);
+            if (listLiveData != null && listLiveData.size() != 0) showPosterDataView();
+        };
+        mViewModel.getMovies().observe(this, movieObserver);
+    }
+    private void loadPopularMovieDataFromViewModel() {
+        final Observer<List<MovieEntry>> movieObserver= listLiveData -> {
+            mRecyclerViewAdapter.setmMovieEntries(listLiveData);
+            if (listLiveData != null && listLiveData.size() != 0) showPosterDataView();
+        };
+        mViewModel.getPopularMovies().observe(this, movieObserver);
+    }
+    private void loadRatedMovieDataFromViewModel() {
+        final Observer<List<MovieEntry>> movieObserver= listLiveData -> {
+            mRecyclerViewAdapter.setmMovieEntries(listLiveData);
+            if (listLiveData != null && listLiveData.size() != 0) showPosterDataView();
+        };
+        mViewModel.getRatedMovies().observe(this, movieObserver);
+    }
+
 
 
     private void setupSharedPreferences() {
@@ -124,18 +159,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 **/
 
-    private void loadMovieDataFromRoom() {
-        Log.d(TAG, "loadMovieDataFromRoom: putting observer in place");
-        final Observer<List<MovieEntry>> movieObserver= new Observer<List<MovieEntry>>(){
-            
-            @Override
-            public void onChanged(@Nullable final List<MovieEntry> listLiveData) {
-                mRecyclerViewAdapter.setmMovieEntries(listLiveData);
-                if (listLiveData != null && listLiveData.size() != 0) showPosterDataView();
-            }
-        };
-        mViewModel.getMovies().observe(this, movieObserver);
-    }
+
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -145,16 +169,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             if (sort.equals(context.getString(R.string.pref_sort_favorites))) {
                 //load posters from favorites database
                 //loadMovieDataFromRoom();
-                setupViewModel();
+                //setupViewModel();
 
             } else if (sort.equals(context.getString(R.string.pref_sort_popularity))){
-                // if sort equals popularity or rating
-                //NetworkUtils.setUrlBase(sort, this);
-                //loadMovieDataFromApi();
-                //loadMovieDataFromRoom();
-                setupViewModel();
+                // if sort equals popularity
+                loadPopularMovieDataFromViewModel();
             } else if (sort.equals(context.getString(R.string.pref_sort_rating))){
-                setupViewModel();
+                // if sort equals popularity
+                loadRatedMovieDataFromViewModel();
             }
         }
     }

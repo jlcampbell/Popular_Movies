@@ -7,10 +7,13 @@ import android.util.Log;
 import com.campbell.jess.movies.AppExecutors;
 import com.campbell.jess.movies.data.database.MovieDao;
 import com.campbell.jess.movies.data.database.MovieEntry;
+import com.campbell.jess.movies.data.database.PopularMovieEntry;
 import com.campbell.jess.movies.data.database.RatedMovieEntry;
 import com.campbell.jess.movies.data.network.MovieNetworkDataSource;
 
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by jlcampbell on 7/4/2018.
@@ -45,17 +48,36 @@ public class MoviesRepository {
         });
 
         LiveData<MovieEntry[]> popularNetworkData = mMovieNetworkDataSource.getPopularMovies();
-        networkData.observeForever(newMovies -> {
+        popularNetworkData.observeForever(newMovies -> {
+            mExecutors.diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    mMovieDao.bulkInsert(newMovies);
+                }
+            });
+        });
+        LiveData<PopularMovieEntry[]> popularNetworkList = movieNetworkDataSource.getPopularMovieList();
+        popularNetworkList.observeForever(newMovies -> {
             mExecutors.diskIO().execute(new Runnable() {
                 @Override
                 public void run() {
                     mMovieDao.bulkPopInsert(newMovies);
                 }
             });
-        });
+            });
 
-        LiveData<RatedMovieEntry[]> ratedNetworkData = mMovieNetworkDataSource.getHighRatedMovies();
-        networkData.observeForever(newMovies -> {
+
+        LiveData<MovieEntry[]> ratedNetworkData = mMovieNetworkDataSource.getHighRatedMovies();
+        ratedNetworkData.observeForever(newMovies -> {
+            mExecutors.diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    mMovieDao.bulkInsert(newMovies);
+                }
+            });
+        });
+        LiveData<RatedMovieEntry[]> ratedNetworkList = movieNetworkDataSource.getRatedMovieList();
+        ratedNetworkList.observeForever(newMovies -> {
             mExecutors.diskIO().execute(new Runnable() {
                 @Override
                 public void run() {
@@ -63,7 +85,6 @@ public class MoviesRepository {
                 }
             });
         });
-
 
 
 
@@ -86,27 +107,37 @@ public class MoviesRepository {
 
     private synchronized void initializeData() {
 //TODO initialize data needs to incorporate a daily update of the data, not just update it everytime it is called
+        Log.d(TAG, "initializeData: ");
         mExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 mMovieNetworkDataSource.fetchPopularMovies();
+                mMovieNetworkDataSource.fetchRatedMovies();
             }
         });
         mInitialized = true;
-
     }
 
     /*
-    database operations
+    database operations- called by view models to get movies from DAO
      */
 
 
     public LiveData<List<MovieEntry>> getMovies() {
         initializeData();
+        //todo add a step here to clear old movies
         return mMovieDao.loadAllMovies();
     }
 
+    public LiveData<List<MovieEntry>> getPopularMovies() {
+        initializeData();
+        return mMovieDao.loadAllPopMovies();
+    }
 
+    public LiveData<List<MovieEntry>> getRatedMovies() {
+        initializeData();
+        return mMovieDao.loadAllRatedMovies();
+    }
 
     public LiveData<MovieEntry> getMovieById(int id) {
         initializeData();

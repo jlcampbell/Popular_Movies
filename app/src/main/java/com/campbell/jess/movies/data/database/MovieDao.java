@@ -48,8 +48,8 @@ public interface MovieDao {
     ///////////////////////POPULAR MOVIES
 
 
-    @Query("SELECT * FROM popularMovies ORDER BY id")
-    LiveData<List<PopularMovieEntry>> loadAllPopMovies();
+    @Query("SELECT * FROM movies INNER JOIN popularMovies ON movies.id=popularMovies.id")
+    LiveData<List<MovieEntry>> loadAllPopMovies();
 
     //select a movie by id
     @Query("SELECT * FROM popularMovies WHERE id = :id")
@@ -73,8 +73,8 @@ public interface MovieDao {
 
     ///////////////////////HIGH RATED MOVIES
 
-    @Query("SELECT * FROM ratedMovies ORDER BY id")
-    LiveData<List<RatedMovieEntry>> loadAllRatedMovies();
+    @Query("SELECT * FROM movies INNER JOIN ratedMovies ON movies.id=ratedMovies.id")
+    LiveData<List<MovieEntry>> loadAllRatedMovies();
 
     //select a movie by id
     @Query("SELECT * FROM ratedMovies WHERE id = :id")
