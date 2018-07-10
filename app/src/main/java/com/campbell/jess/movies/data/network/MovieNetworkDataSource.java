@@ -35,6 +35,7 @@ public class MovieNetworkDataSource {
     private final MutableLiveData<RatedMovieEntry[]> mRatedMovieList;
     private final MutableLiveData<MovieEntry[]> mPopularMovies;
     private final MutableLiveData<PopularMovieEntry[]> mPopularMovieList;
+    private final MutableLiveData<String[]> mReviews;
     private final AppExecutors mExecutors;
 
     private MovieNetworkDataSource(Context context, AppExecutors executors) {
@@ -45,6 +46,7 @@ public class MovieNetworkDataSource {
         mRatedMovieList = new MutableLiveData<RatedMovieEntry[]>();
         mPopularMovies = new MutableLiveData<MovieEntry[]>();
         mPopularMovieList = new MutableLiveData<PopularMovieEntry[]>();
+        mReviews = new MutableLiveData<String[]>();
     }
 
     /**
@@ -142,7 +144,6 @@ public class MovieNetworkDataSource {
             @Override
             public void run() {
                 try {
-
                     URL movieRequestUrl = NetworkUtils.buildRatedUrl();
 
                     String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
@@ -162,9 +163,46 @@ public class MovieNetworkDataSource {
                 }
             }
         });
-
-
     };
+    public void fetchMovieReviews(int id) {
+        mExecutors.networkIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL reviewRequestUrl = NetworkUtils.buildReviewUrl(id);
+
+                    String jsonMovieReviewResponse = NetworkUtils.getResponseFromHttpUrl(reviewRequestUrl);
+                    String[] reviews = MovieJsonUtils.getReviewsFromJson(jsonMovieReviewResponse);
+
+                    if (reviews != null) {
+                        mReviews.postValue(reviews);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                }
+            }
+        });
+    };
+
+    public void fetchMovieTrailers(int id) {
+        mExecutors.networkIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL trailerRequestUrl = NetworkUtils.buildVideoUrl(id);
+
+                    String jsonTrailerMovieResponse = NetworkUtils.getResponseFromHttpUrl(trailerRequestUrl);
+                    String[] trailers = MovieJsonUtils.getTrailersFromJson(jsonTrailerMovieResponse);
+                    String
+                }catch (Exception e) {
+                    e.printStackTrace();
+
+                }
+            }
+        });
+    }
+
 }
 
 

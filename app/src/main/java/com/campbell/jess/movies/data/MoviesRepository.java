@@ -117,6 +117,17 @@ public class MoviesRepository {
         });
         mInitialized = true;
     }
+    private synchronized void initializeDetailData(int id) {
+        Log.d(TAG, "initialize detail data");
+        mExecutors.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mMovieNetworkDataSource.fetchMovieReviews(id);
+                mMovieNetworkDataSource.fetchMovieTrailers(id);
+            }
+        });
+        //details initialized = true
+    }
 
     /*
     database operations- called by view models to get movies from DAO
@@ -142,6 +153,11 @@ public class MoviesRepository {
     public LiveData<MovieEntry> getMovieById(int id) {
         initializeData();
         return mMovieDao.getMovieById(id);
+    }
+
+    public LiveData<MovieEntry> getTrailersById(int id) {
+        initializeDetailData();
+        return m
     }
 
 }

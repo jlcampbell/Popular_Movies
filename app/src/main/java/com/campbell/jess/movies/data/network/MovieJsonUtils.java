@@ -108,7 +108,7 @@ public class MovieJsonUtils {
         return parsedMoviePosters;
 
     }
-
+**/
     public static String[] getReviewsFromJson(String reviewJsonString)
         throws JSONException {
 
@@ -157,10 +157,10 @@ public class MovieJsonUtils {
         }
         return parsedTrailerTitles;
     }
-**/
 
 
-    //returns a Movie object for a given position in the movie string
+
+    //returns a MovieEntry for a given position in the movie string
     public static MovieEntry getMovie(String movieJsonString, int position, Context context)
             throws JSONException{
 
