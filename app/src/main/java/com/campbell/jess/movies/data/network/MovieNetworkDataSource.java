@@ -7,6 +7,8 @@ import android.util.Log;
 
 import com.campbell.jess.movies.AppExecutors;
 import com.campbell.jess.movies.data.database.MovieEntry;
+import com.campbell.jess.movies.data.database.PopularMovieEntry;
+import com.campbell.jess.movies.data.database.RatedMovieEntry;
 import com.campbell.jess.movies.model.Movie;
 
 import java.net.URL;
@@ -18,7 +20,9 @@ import java.net.URL;
 public class MovieNetworkDataSource {
     private static final String LOG_TAG = MovieNetworkDataSource.class.getSimpleName();
 
-    /** add update and firebase stuff here **/
+    /**
+     * add update and firebase stuff here
+     **/
 
     // For singleton instantiation
     private static final Object LOCK = new Object();
@@ -27,12 +31,16 @@ public class MovieNetworkDataSource {
 
     // LiveData storing the latest downloaded movies
     private final MutableLiveData<MovieEntry[]> mDownloadedMovies;
+    private final MutableLiveData<MovieEntry[]> mRatedMovies;
+    private final MutableLiveData<MovieEntry[]> mPopularMovies;
     private final AppExecutors mExecutors;
 
     private MovieNetworkDataSource(Context context, AppExecutors executors) {
         mContext = context;
         mExecutors = executors;
         mDownloadedMovies = new MutableLiveData<MovieEntry[]>();
+        mRatedMovies = new MutableLiveData<MovieEntry[]>();
+        mPopularMovies = new MutableLiveData<MovieEntry[]>();
     }
 
     /**
@@ -57,9 +65,11 @@ public class MovieNetworkDataSource {
         return mDownloadedMovies;
     }
 
+    public LiveData<PopularMovieEntry[]> getPopularMovies() { return mPopularMovies; }
+
     //returns high rated movies as a livedata list of MovieEntries
-    public LiveData<MovieEntry[]> getHighRatedMovies() {
-        return mDownloadedMovies;
+    public LiveData<RatedMovieEntry[]> getHighRatedMovies() {
+        return mRatedMovies;
     }
 
     //TODO create fetch movie service
@@ -68,7 +78,7 @@ public class MovieNetworkDataSource {
     /**
      * gets the newest movies
      */
-    public void fetchMovies(){
+    public void fetchMovies() {
         mExecutors.networkIO().execute(new Runnable() {
             @Override
             public void run() {
@@ -91,7 +101,8 @@ public class MovieNetworkDataSource {
 
 
     }
-    public void fetchPopularMovies(){
+
+    public void fetchPopularMovies() {
         mExecutors.networkIO().execute(new Runnable() {
             @Override
             public void run() {
@@ -103,7 +114,31 @@ public class MovieNetworkDataSource {
                     MovieEntry[] movieEntries = MovieJsonUtils.getMovieEntries(jsonMovieResponse, mContext);
 
                     if (movieEntries != null) {
-                        mDownloadedMovies.postValue(movieEntries);
+                        //mDownloadedMovies.postValue(movieEntries);
+                        mPopularMovies.postValue(movieEntries);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                }
+            }
+        });
+    }
+
+    public void fetchRatedMovies() {
+        mExecutors.networkIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    URL movieRequestUrl = NetworkUtils.buildRatedUrl();
+
+                    String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
+                    MovieEntry[] movieEntries = MovieJsonUtils.getMovieEntries(jsonMovieResponse, mContext);
+
+                    if (movieEntries != null) {
+                        //mDownloadedMovies.postValue(movieEntries);
+                        mRatedMovies.postValue(movieEntries);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -113,8 +148,9 @@ public class MovieNetworkDataSource {
         });
 
 
-    }
-
-
-
+    };
 }
+
+
+
+

@@ -7,6 +7,7 @@ import android.util.Log;
 import com.campbell.jess.movies.AppExecutors;
 import com.campbell.jess.movies.data.database.MovieDao;
 import com.campbell.jess.movies.data.database.MovieEntry;
+import com.campbell.jess.movies.data.database.RatedMovieEntry;
 import com.campbell.jess.movies.data.network.MovieNetworkDataSource;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class MoviesRepository {
         mMovieNetworkDataSource = movieNetworkDataSource;
         mExecutors = appExecutors;
 
+        //todo delete this generic method
         LiveData<MovieEntry[]> networkData = mMovieNetworkDataSource.getMovies();
         networkData.observeForever(newMovies ->  {
             mExecutors.diskIO().execute(new Runnable() {
@@ -41,6 +43,33 @@ public class MoviesRepository {
                 }
             });
         });
+
+        LiveData<MovieEntry[]> popularNetworkData = mMovieNetworkDataSource.getPopularMovies();
+        networkData.observeForever(newMovies -> {
+            mExecutors.diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    mMovieDao.bulkPopInsert(newMovies);
+                }
+            });
+        });
+
+        LiveData<RatedMovieEntry[]> ratedNetworkData = mMovieNetworkDataSource.getHighRatedMovies();
+        networkData.observeForever(newMovies -> {
+            mExecutors.diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    mMovieDao.bulkRatedInsert(newMovies);
+                }
+            });
+        });
+
+
+
+
+
+
+
     }
 
     public synchronized static MoviesRepository getInstance(MovieDao movieDao, MovieNetworkDataSource movieNetworkDataSource, AppExecutors appExecutors){
@@ -76,6 +105,8 @@ public class MoviesRepository {
         initializeData();
         return mMovieDao.loadAllMovies();
     }
+
+
 
     public LiveData<MovieEntry> getMovieById(int id) {
         initializeData();
