@@ -29,6 +29,9 @@ public class MoviesRepository {
     private final AppExecutors mExecutors;
     private boolean mInitialized = false;
 
+    private int mId ;
+    private LiveData<String[]> mTrailers;
+
     private MoviesRepository( MovieDao movieDao, MovieNetworkDataSource movieNetworkDataSource, AppExecutors appExecutors) {
         mMovieDao = movieDao;
         mMovieNetworkDataSource = movieNetworkDataSource;
@@ -41,8 +44,6 @@ public class MoviesRepository {
                 @Override
                 public void run() {
                     mMovieDao.bulkInsert(newMovies);
-                    String test = newMovies[0].getTitle();
-                    Log.d(LOG_TAG, test );
                 }
             });
         });
@@ -56,7 +57,8 @@ public class MoviesRepository {
                 }
             });
         });
-        LiveData<PopularMovieEntry[]> popularNetworkList = movieNetworkDataSource.getPopularMovieList();
+
+        LiveData<PopularMovieEntry[]> popularNetworkList = mMovieNetworkDataSource.getPopularMovieList();
         popularNetworkList.observeForever(newMovies -> {
             mExecutors.diskIO().execute(new Runnable() {
                 @Override
@@ -76,6 +78,7 @@ public class MoviesRepository {
                 }
             });
         });
+
         LiveData<RatedMovieEntry[]> ratedNetworkList = movieNetworkDataSource.getRatedMovieList();
         ratedNetworkList.observeForever(newMovies -> {
             mExecutors.diskIO().execute(new Runnable() {
@@ -86,8 +89,18 @@ public class MoviesRepository {
             });
         });
 
-
-
+        LiveData<String[]> trailers = movieNetworkDataSource.getTrailers();
+        trailers.observeForever(trailersForMovie -> {
+            mExecutors.diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    mTrailers = trailers;
+                    //MovieEntry movie = mMovieDao.getMovieById(mId).getValue();
+                    //movie.setTrailerIds(trailers.getValue());
+                    //mMovieDao.updateMovie(movie);
+                }
+            });
+        });
 
 
 
@@ -122,7 +135,8 @@ public class MoviesRepository {
         mExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                mMovieNetworkDataSource.fetchMovieReviews(id);
+                mId = id;
+//                mMovieNetworkDataSource.fetchMovieReviews(id);
                 mMovieNetworkDataSource.fetchMovieTrailers(id);
             }
         });
@@ -152,13 +166,13 @@ public class MoviesRepository {
 
     public LiveData<MovieEntry> getMovieById(int id) {
         initializeData();
+        initializeDetailData(id);
         return mMovieDao.getMovieById(id);
     }
 
-    public LiveData<MovieEntry> getTrailersById(int id) {
-        initializeDetailData();
-        return m
+    public LiveData<String[]> getTrailersById(int id) {
+        initializeDetailData(id);
+        return mTrailers;
     }
-
 }
 

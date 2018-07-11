@@ -49,6 +49,10 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
 
     Movie mMovie;
 
+    String[] mTrailerIds;
+    String[] mTrailerTitles;
+    String[] mReviews;
+
     AppDatabase mAppDatabase;
 
     String TAG = this.getClass().getSimpleName();
@@ -90,7 +94,14 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         mViewModel.getMovie().observe(this, movieEntry -> {
             if (movieEntry != null) populateUI(movieEntry);
         });
+        /**
+        mViewModel.getTrailers().observe(this, trailers -> {
+            if (trailers != null) populateTrailers(trailers);
+        });
+         **/
        // new FetchDetailsTask().execute();
+        new FetchTrailersTask().execute();
+        new FetchReviewsTask().execute();
     }
 
     private void populateUI(MovieEntry movie){
@@ -99,7 +110,8 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         tv_overview.setText(movie.getPlot());
         tv_rating.setText(movie.getRating());
         tv_releaseDate.setText(movie.getReleaseDate());
-
+        //String[] trailerIds = mViewModel.getTrailers();
+       // Log.d(TAG, trailerIds[0]);
 
 
         /**
@@ -112,6 +124,12 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
     **/
 
          }
+     private void populateTrailers(){
+         mTrailersAdapter.setTrailerTitles(mTrailerTitles);
+     }
+     private void populateReviews(){
+         mReviewsAdapter.setReviewStrings(mReviews);
+     }
 
     private void initViews(){
         tv_title = findViewById(R.id.tv_title);
@@ -159,8 +177,9 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
     public void onClick(int position) {
         Toast mToast = Toast.makeText(this, String.valueOf(position), Toast.LENGTH_SHORT);
         mToast.show();
-        String id = mMovie.getTrailerIds()[position];
-  //      goToYouTube(getApplicationContext(), id);
+        //String id = mMovie.getTrailerIds()[position];
+        String id = mTrailerIds[position];
+        goToYouTube(getApplicationContext(), id);
     }
 /**
     public class FetchDetailsTask extends AsyncTask<String, Void, Movie> {
@@ -186,12 +205,13 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
             }
         }
     }
+ **/
 //TODO combine reveiws and trailer requests into one api call
     public class FetchReviewsTask extends AsyncTask<String, Void, String[]> {
 
         @Override
         protected String[] doInBackground(String... strings) {
-            URL reviewRequestUrl = NetworkUtils.buildReviewUrl(getApplicationContext(), mMovie.getId());
+            URL reviewRequestUrl = NetworkUtils.buildReviewUrl(mMovieId);
             try {
                 String jsonMovieReviewResponse = NetworkUtils.getResponseFromHttpUrl(reviewRequestUrl);
                 String[] reviews = MovieJsonUtils.getReviewsFromJson(jsonMovieReviewResponse, getApplicationContext());
@@ -207,8 +227,10 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         @Override
         protected void onPostExecute(String[] reviews){
             if (reviews != null){
-                mMovie.setReviews(reviews);
-                new FetchTrailersTask().execute();
+                //mMovie.setReviews(reviews);
+                //new FetchTrailersTask().execute();
+                mReviews = reviews;
+                populateReviews();
             }
         }
     }
@@ -217,7 +239,7 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
 
         @Override
         protected String doInBackground(String... strings) {
-            URL videoRequestUrl = NetworkUtils.buildVideoUrl(getApplicationContext(), mMovie.getId());
+            URL videoRequestUrl = NetworkUtils.buildVideoUrl(mMovieId);
             try {
 
                 //String[] reviews = MovieJsonUtils.getReviewsFromJson(jsonMovieReviewResponse, getApplicationContext());
@@ -235,15 +257,15 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
 
         @Override
         protected void onPostExecute(String jsonTrailerMovieResponse){
-            String[] trailers;
-            String[] titles;
+            //String[] trailers;
+            //String[] titles;
             try {
-                trailers = MovieJsonUtils.getTrailersFromJson(jsonTrailerMovieResponse, getApplicationContext());
-                mMovie.setTrailerIds(trailers);
-                titles = MovieJsonUtils.getTrailerTitlesFromJson(jsonTrailerMovieResponse, getApplicationContext());
-                mMovie.setTrailerTitles(titles);
-                populateUI(mMovie);
-                mRecyclerViewReviews.setVisibility(View.VISIBLE);
+                mTrailerIds = MovieJsonUtils.getTrailersFromJson(jsonTrailerMovieResponse, getApplicationContext());
+                //mMovie.setTrailerIds(trailers);
+                mTrailerTitles = MovieJsonUtils.getTrailerTitlesFromJson(jsonTrailerMovieResponse, getApplicationContext());
+                //mMovie.setTrailerTitles(titles);
+                populateTrailers();
+               // mRecyclerViewReviews.setVisibility(View.VISIBLE);
                 mRecyclerVeiwTrailers.setVisibility(View.VISIBLE);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -256,5 +278,5 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
-    } **/
+    }
     }

@@ -75,4 +75,8 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Traile
         notifyDataSetChanged();
     }
 
+    public void setTrailerIDs(String[] ids) {
+        trailerIDs = ids;
+        notifyDataSetChanged();
+    }
 }

@@ -109,12 +109,12 @@ public class MovieJsonUtils {
 
     }
 **/
-    public static String[] getReviewsFromJson(String reviewJsonString)
+    public static String[] getReviewsFromJson(String reviewJsonString, Context context)
         throws JSONException {
 
         String[] parsedReviews;
 
-        JSONArray reviewsArray = getJsonArray(reviewJsonString);
+        JSONArray reviewsArray = getJsonArray(reviewJsonString, context);
         parsedReviews = new String[Objects.requireNonNull(reviewsArray).length()];
 
         for (int i=0; i < reviewsArray.length(); i++) {
@@ -126,12 +126,12 @@ public class MovieJsonUtils {
 
     }
 
-    public static String[] getTrailersFromJson(String trailerJsonString)
+    public static String[] getTrailersFromJson(String trailerJsonString, Context context)
         throws JSONException {
 
         String[] parsedTrailers;
 
-        JSONArray trailersArray = getJsonArray(trailerJsonString);
+        JSONArray trailersArray = getJsonArray(trailerJsonString, context);
         parsedTrailers = new String[Objects.requireNonNull(trailersArray).length()];
 
         for (int i=0; i<trailersArray.length(); i++) {
@@ -142,12 +142,12 @@ public class MovieJsonUtils {
         return parsedTrailers;
     }
 
-    public static String[] getTrailerTitlesFromJson(String trailerTitleJsonString)
+    public static String[] getTrailerTitlesFromJson(String trailerTitleJsonString, Context context)
         throws JSONException {
 
         String[] parsedTrailerTitles;
 
-        JSONArray trailerTitlesArray = getJsonArray(trailerTitleJsonString);
+        JSONArray trailerTitlesArray = getJsonArray(trailerTitleJsonString, context);
         parsedTrailerTitles = new String[Objects.requireNonNull(trailerTitlesArray).length()];
 
         for (int i=0; i< parsedTrailerTitles.length; i++){

@@ -3,6 +3,7 @@ package com.campbell.jess.movies.data.network;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
+import android.nfc.Tag;
 import android.util.Log;
 
 import com.campbell.jess.movies.AppExecutors;
@@ -12,6 +13,7 @@ import com.campbell.jess.movies.data.database.RatedMovieEntry;
 import com.campbell.jess.movies.model.Movie;
 
 import java.net.URL;
+import java.util.List;
 
 /**
  * Created by jlcampbell on 7/4/2018. Heavily referenced sunshine "build an app with architecture components" tutorial at https://codelabs.developers.google.com/codelabs/build-app-with-arch-components/index.html
@@ -36,17 +38,26 @@ public class MovieNetworkDataSource {
     private final MutableLiveData<MovieEntry[]> mPopularMovies;
     private final MutableLiveData<PopularMovieEntry[]> mPopularMovieList;
     private final MutableLiveData<String[]> mReviews;
+    private final MutableLiveData<String[]> mTrailers;
+
+    private String[] tempTrailers;
+
     private final AppExecutors mExecutors;
+    //private String[] tempTrailers;
 
     private MovieNetworkDataSource(Context context, AppExecutors executors) {
         mContext = context;
         mExecutors = executors;
+
+        //todo this will be all movies
         mDownloadedMovies = new MutableLiveData<MovieEntry[]>();
+
         mRatedMovies = new MutableLiveData<MovieEntry[]>();
         mRatedMovieList = new MutableLiveData<RatedMovieEntry[]>();
         mPopularMovies = new MutableLiveData<MovieEntry[]>();
         mPopularMovieList = new MutableLiveData<PopularMovieEntry[]>();
         mReviews = new MutableLiveData<String[]>();
+        mTrailers = new MutableLiveData<String[]>();
     }
 
     /**
@@ -82,6 +93,7 @@ public class MovieNetworkDataSource {
 
     public LiveData<RatedMovieEntry[]> getRatedMovieList() { return mRatedMovieList; }
 
+    public LiveData<String[]> getTrailers() { return mTrailers; }
     //TODO create fetch movie service
     //public void startFetchMovieService()
 
@@ -108,10 +120,7 @@ public class MovieNetworkDataSource {
                 }
             }
         });
-
-
     }
-
     public void fetchPopularMovies() {
         mExecutors.networkIO().execute(new Runnable() {
             @Override
@@ -172,7 +181,7 @@ public class MovieNetworkDataSource {
                     URL reviewRequestUrl = NetworkUtils.buildReviewUrl(id);
 
                     String jsonMovieReviewResponse = NetworkUtils.getResponseFromHttpUrl(reviewRequestUrl);
-                    String[] reviews = MovieJsonUtils.getReviewsFromJson(jsonMovieReviewResponse);
+                    String[] reviews = MovieJsonUtils.getReviewsFromJson(jsonMovieReviewResponse, mContext);
 
                     if (reviews != null) {
                         mReviews.postValue(reviews);
@@ -186,15 +195,23 @@ public class MovieNetworkDataSource {
     };
 
     public void fetchMovieTrailers(int id) {
+        Log.d(LOG_TAG, "attempting to fetch movie trailers in data source");
         mExecutors.networkIO().execute(new Runnable() {
             @Override
             public void run() {
                 try {
                     URL trailerRequestUrl = NetworkUtils.buildVideoUrl(id);
+                    Log.d(LOG_TAG, "building video url");
+                    Log.d(LOG_TAG, trailerRequestUrl.toString());
 
                     String jsonTrailerMovieResponse = NetworkUtils.getResponseFromHttpUrl(trailerRequestUrl);
-                    String[] trailers = MovieJsonUtils.getTrailersFromJson(jsonTrailerMovieResponse);
-                    String
+                    Log.d(LOG_TAG, jsonTrailerMovieResponse);
+                    String[] trailers = MovieJsonUtils.getTrailersFromJson(jsonTrailerMovieResponse, mContext);
+                    Log.d(LOG_TAG, trailers[0]);
+                    if (trailers != null){
+                        mTrailers.postValue(trailers);
+                       // Log.d()
+                    }
                 }catch (Exception e) {
                     e.printStackTrace();
 
@@ -203,6 +220,43 @@ public class MovieNetworkDataSource {
         });
     }
 
+    public String[] fetchMovieTrailersReturnable(int id) {
+
+        mExecutors.networkIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL trailerRequestUrl = NetworkUtils.buildVideoUrl(id);
+
+                    String jsonTrailerMovieResponse = NetworkUtils.getResponseFromHttpUrl(trailerRequestUrl);
+                    String[] trailers = MovieJsonUtils.getTrailersFromJson(jsonTrailerMovieResponse, mContext);
+
+                    if (trailers != null){
+
+                        tempTrailers = trailers;
+                    }
+                }catch (Exception e) {
+                    e.printStackTrace();
+
+                }
+            }
+        });
+        return tempTrailers;
+    }
+
+/**
+    public void fetchBulkPopularTrailers() {
+        //todo change to all movie list
+        PopularMovieEntry[] popularMovies = mPopularMovieList.getValue();
+        String[][] allTrailers = new List
+        for (PopularMovieEntry movie: popularMovies
+             ) {
+            int id = movie.getId();
+            fetchMovieTrailers(id);
+            String[] popularTrailers = mTrailers;
+        }
+    }
+**/
 }
 
 

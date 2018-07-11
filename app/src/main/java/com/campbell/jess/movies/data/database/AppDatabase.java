@@ -11,7 +11,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-@Database(entities = {MovieEntry.class, PopularMovieEntry.class, RatedMovieEntry.class}, version = 6, exportSchema = false)
+@Database(entities = {MovieEntry.class, PopularMovieEntry.class, RatedMovieEntry.class}, version = 7, exportSchema = false)
 
 public abstract class AppDatabase extends RoomDatabase {
 

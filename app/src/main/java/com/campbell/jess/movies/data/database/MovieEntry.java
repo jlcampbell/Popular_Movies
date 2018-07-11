@@ -27,13 +27,13 @@ public class MovieEntry {
 
     @ColumnInfo(name = "releaseDate")
     private String releaseDate;
-
+/**
     @ColumnInfo(name = "trailerIds")
-    private String trailerIds;
+    private String[] trailerIds;
 
     @ColumnInfo(name = "trailerTitles")
-    private String trailerTitles;
-
+    private String[] trailerTitles;
+**/
     public MovieEntry(int id, String title, String poster, String plot, String rating, String releaseDate) {
         this.id = id;
         this.title = title;
@@ -62,11 +62,12 @@ public class MovieEntry {
 
     public String getReleaseDate() { return releaseDate; }
     //public void setReleaseDate(String releaseDate) { this.releaseDate = releaseDate; }
+/**
+    public String[] getTrailerIds() { return trailerIds; }
+    public void setTrailerIds(String[] trailerIds) { this.trailerIds = trailerIds; }
 
-    public String getTrailerIds() { return trailerIds; }
-    public void setTrailerIds(String trailerIds) { this.trailerIds = trailerIds; }
-
-    public String getTrailerTitles() { return trailerTitles; }
-    public void setTrailerTitles(String trailerTitles) { this.trailerTitles = trailerTitles; }
-}
+    public String[] getTrailerTitles() { return trailerTitles; }
+    public void setTrailerTitles(String[] trailerTitles) { this.trailerTitles = trailerTitles; }
+**/
+ }
 
