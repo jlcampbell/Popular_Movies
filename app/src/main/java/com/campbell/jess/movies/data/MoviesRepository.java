@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer;
 import android.util.Log;
 
 import com.campbell.jess.movies.AppExecutors;
+import com.campbell.jess.movies.data.database.FavoriteMovieEntry;
 import com.campbell.jess.movies.data.database.MovieDao;
 import com.campbell.jess.movies.data.database.MovieEntry;
 import com.campbell.jess.movies.data.database.PopularMovieEntry;
@@ -173,6 +174,24 @@ public class MoviesRepository {
     public LiveData<String[]> getTrailersById(int id) {
         initializeDetailData(id);
         return mTrailers;
+    }
+
+    public Boolean getIsFavorite(int id) {
+        try {
+            mMovieDao.getFavoriteMovieById(id);
+            return true;
+        }
+        catch (Exception e){
+            return false;
+        }
+    }
+    public void addFavorite(int id) {
+        FavoriteMovieEntry entry = new FavoriteMovieEntry(id);
+        mMovieDao.insertFavoriteMovie(entry);
+    }
+    public void deleteFavorite(int id) {
+        FavoriteMovieEntry entry = new FavoriteMovieEntry(id);
+        mMovieDao.deleteFavoriteMovie(entry);
     }
 }
 

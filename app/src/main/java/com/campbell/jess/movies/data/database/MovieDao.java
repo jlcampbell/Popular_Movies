@@ -98,6 +98,28 @@ public interface MovieDao {
 
 
     ///////////////////////FAVORITE MOVIES
+    @Query("SELECT * FROM movies INNER JOIN favoriteMovies ON movies.id=favoriteMovies.id")
+    LiveData<List<FavoriteMovieEntry>> loadAllFavoriteMovies();
+
+    //select a movie by id
+    @Query("SELECT * FROM favoriteMovies WHERE id = :id")
+    LiveData<FavoriteMovieEntry> getFavoriteMovieById(int id);
+
+    //insert one movie
+    @Insert
+    void insertFavoriteMovie(FavoriteMovieEntry movieEntry);
+
+    /** method to insert many movies at once into favorite movie table
+     * @param movie
+     */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void bulkFavoriteInsert(FavoriteMovieEntry... movie);
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    void updateFavoriteMovie(FavoriteMovieEntry movieEntry);
+
+    @Delete
+    void deleteFavoriteMovie(FavoriteMovieEntry movieEntry);
 
 
 

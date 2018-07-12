@@ -19,6 +19,8 @@ public class DetailActivityViewModel extends ViewModel {
     private final int mMovieId;
     private final MoviesRepository mRepository;
 
+    private boolean mIsFavorite;
+
 
 
     public DetailActivityViewModel(MoviesRepository repository, int movieId){
@@ -26,9 +28,16 @@ public class DetailActivityViewModel extends ViewModel {
         mMovieId = movieId;
         mMovie = mRepository.getMovieById(mMovieId);
  //       mTrailers = mRepository.getTrailersById(mMovieId);
-
+        mIsFavorite = mRepository.getIsFavorite(mMovieId);
     }
 
     public LiveData<MovieEntry> getMovie() { return mMovie; }
  //   public LiveData<String[]> getTrailers() { return mTrailers; }
+    public boolean getIsFavorite() { return mIsFavorite; }
+    public void addFavorite() {
+        mRepository.addFavorite(mMovieId);
+    }
+    public void deleteFavorite() {
+        mRepository.deleteFavorite(mMovieId);
+    }
 }

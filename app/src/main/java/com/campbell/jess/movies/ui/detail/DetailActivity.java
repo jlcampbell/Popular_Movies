@@ -154,6 +154,8 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
     }
 
     private void onFavoriteButtonClicked(){
+        //old way
+        /*
         int id = mMovie.getId();
         String title = mMovie.getTitle();
         String poster = mMovie.getPoster();
@@ -170,7 +172,7 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
                 finish();
             }
         });
-
+**/
     }
 
     @Override
