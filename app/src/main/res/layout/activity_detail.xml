@@ -96,11 +96,32 @@ android:fillViewport="true">
         app:layout_constraintStart_toStartOf="@+id/tv_title"
         tools:text="rating" />
 
+    <TextView
+        android:id="@+id/trailers_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/detail_label_trailers"
+        app:layout_constraintStart_toStartOf="@+id/tv_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_rating"
+        android:layout_marginTop="8dp"
+        />
+
+        <TextView
+            android:id="@+id/reviews_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/detail_label_reviews"
+            app:layout_constraintStart_toStartOf="@+id/tv_title"
+            app:layout_constraintTop_toBottomOf="@+id/trailers_label"
+            android:layout_marginTop="8dp"
+             />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview_trailers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/tv_rating"
+        app:layout_constraintTop_toBottomOf="@+id/reviews_label"
         app:layout_constraintStart_toStartOf="@id/tv_title"
         ></android.support.v7.widget.RecyclerView>
 

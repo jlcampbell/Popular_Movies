@@ -64,6 +64,10 @@
 
     <string name="detail_image_contentDescription">Poster image</string>
 
+    <string name="detail_label_trailers">Trailers</string>
+
+    <string name="detail_label_reviews">Reviews</string>
+
     <!-- used to launch youtube app -->
 
     <string name="YOUTUBE_PACKAGE_NAME" translatable="false">com.google.android.youtube"</string>
