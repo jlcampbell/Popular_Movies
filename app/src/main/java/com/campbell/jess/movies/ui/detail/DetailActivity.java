@@ -45,7 +45,9 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
     ReviewsAdapter mReviewsAdapter;
 
     ImageView iv_poster;
+
     Button btn_favorite;
+    Button btn_unfavorite;
 
     Movie mMovie;
 
@@ -53,11 +55,11 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
     String[] mTrailerTitles;
     String[] mReviews;
 
-    AppDatabase mAppDatabase;
-
     String TAG = this.getClass().getSimpleName();
 
     private DetailActivityViewModel mViewModel;
+
+    private boolean mIsFavorite;
 
 
     @Override
@@ -66,6 +68,8 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         setContentView(R.layout.activity_detail);
 
         initViews();
+
+
 
         //trailers adapter
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -81,10 +85,6 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         mRecyclerViewReviews.setLayoutManager(reviewLinearLayoutManager);
         mRecyclerViewReviews.setHasFixedSize(false);
 
-
-
-       // mAppDatabase = AppDatabase.getInstance(getApplicationContext());
-
         Intent intentThatStartedActivity = getIntent();
         mMovieId = intentThatStartedActivity.getIntExtra("movieId", 0);
 
@@ -94,14 +94,22 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         mViewModel.getMovie().observe(this, movieEntry -> {
             if (movieEntry != null) populateUI(movieEntry);
         });
-        /**
-        mViewModel.getTrailers().observe(this, trailers -> {
-            if (trailers != null) populateTrailers(trailers);
+        mViewModel.getFavorite().observe(this,favoriteStatus -> {
+            if (favoriteStatus != null) displayFavorite();
+            else displayDefault();
         });
-         **/
-       // new FetchDetailsTask().execute();
+
         new FetchTrailersTask().execute();
         new FetchReviewsTask().execute();
+    }
+
+    private void displayFavorite(){
+        btn_favorite.setVisibility(View.INVISIBLE);
+        btn_unfavorite.setVisibility(View.VISIBLE);
+    }
+    private void displayDefault(){
+        btn_favorite.setVisibility(View.VISIBLE);
+        btn_unfavorite.setVisibility(View.INVISIBLE);
     }
 
     private void populateUI(MovieEntry movie){
@@ -110,19 +118,7 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         tv_overview.setText(movie.getPlot());
         tv_rating.setText(movie.getRating());
         tv_releaseDate.setText(movie.getReleaseDate());
-        //String[] trailerIds = mViewModel.getTrailers();
-       // Log.d(TAG, trailerIds[0]);
-
-
-        /**
-        String[] reviews = movie.getReviews();
-        mReviewsAdapter.setReviewStrings(reviews);
-
-        String[] trailerIds = movie.getTrailerIds();
-        String[]trailerTitles = movie.getTrailerTitles();
-        mTrailersAdapter.setTrailerTitles(trailerTitles);
-    **/
-
+        getSupportActionBar().setTitle(movie.getTitle());
          }
      private void populateTrailers(){
          mTrailersAdapter.setTrailerTitles(mTrailerTitles);
@@ -151,28 +147,28 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
             }
         });
 
+        btn_unfavorite = findViewById(R.id.btn_unfavorite);
+        btn_unfavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { onUnfavoriteButtonClicked();}
+        });
+        if (mIsFavorite){
+            btn_favorite.setVisibility(View.INVISIBLE);
+            btn_unfavorite.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void onUnfavoriteButtonClicked(){
+        mViewModel.deleteFavorite();
+        btn_favorite.setVisibility(View.VISIBLE);
+        btn_unfavorite.setVisibility(View.INVISIBLE);
     }
 
     private void onFavoriteButtonClicked(){
-        //old way
-        /*
-        int id = mMovie.getId();
-        String title = mMovie.getTitle();
-        String poster = mMovie.getPoster();
-        String plot = mMovie.getPlot();
-        String rating = mMovie.getRating();
-        String releaseDate = mMovie.getReleaseDate();
-
-        final MovieEntry movieEntry = new MovieEntry(id, title, poster, plot, rating, releaseDate );
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                mAppDatabase.movieDao().insertMovie(movieEntry);
-                Log.v(TAG, "inserting movie to db");
-                finish();
-            }
-        });
-**/
+        mViewModel.addFavorite();
+        Log.d(TAG, "onFavoriteButtonClicked: ");
+        btn_favorite.setVisibility(View.INVISIBLE);
+        btn_unfavorite.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -183,32 +179,9 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         String id = mTrailerIds[position];
         goToYouTube(getApplicationContext(), id);
     }
-/**
-    public class FetchDetailsTask extends AsyncTask<String, Void, Movie> {
 
-        @Override
-        protected Movie doInBackground(String... strings) {
-            URL movieRequestUrl = NetworkUtils.buildUrl(getApplicationContext());
-            try {
-                //try to get http response
-                String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
-                return MovieJsonUtils.getMovie(jsonMovieResponse, position, getApplicationContext());
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Movie movie){
-            if (movie != null) {
-                mMovie = movie;
-                new FetchReviewsTask().execute();
-            }
-        }
-    }
- **/
 //TODO combine reveiws and trailer requests into one api call
+//TODO move reviews and trailer requests to datasource
     public class FetchReviewsTask extends AsyncTask<String, Void, String[]> {
 
         @Override
@@ -217,8 +190,6 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
             try {
                 String jsonMovieReviewResponse = NetworkUtils.getResponseFromHttpUrl(reviewRequestUrl);
                 String[] reviews = MovieJsonUtils.getReviewsFromJson(jsonMovieReviewResponse, getApplicationContext());
-
-                //String jsonTrailerMovieResponse = NetworkUtils.getResponseFromHttpUrl(videoRequestUrl);
                 return reviews;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -229,8 +200,6 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         @Override
         protected void onPostExecute(String[] reviews){
             if (reviews != null){
-                //mMovie.setReviews(reviews);
-                //new FetchTrailersTask().execute();
                 mReviews = reviews;
                 populateReviews();
             }
@@ -243,13 +212,7 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
         protected String doInBackground(String... strings) {
             URL videoRequestUrl = NetworkUtils.buildVideoUrl(mMovieId);
             try {
-
-                //String[] reviews = MovieJsonUtils.getReviewsFromJson(jsonMovieReviewResponse, getApplicationContext());
-
                 String jsonTrailerMovieResponse = NetworkUtils.getResponseFromHttpUrl(videoRequestUrl);
-
-
-
                 return jsonTrailerMovieResponse;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -259,20 +222,14 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
 
         @Override
         protected void onPostExecute(String jsonTrailerMovieResponse){
-            //String[] trailers;
-            //String[] titles;
             try {
                 mTrailerIds = MovieJsonUtils.getTrailersFromJson(jsonTrailerMovieResponse, getApplicationContext());
-                //mMovie.setTrailerIds(trailers);
                 mTrailerTitles = MovieJsonUtils.getTrailerTitlesFromJson(jsonTrailerMovieResponse, getApplicationContext());
-                //mMovie.setTrailerTitles(titles);
                 populateTrailers();
-               // mRecyclerViewReviews.setVisibility(View.VISIBLE);
                 mRecyclerVeiwTrailers.setVisibility(View.VISIBLE);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
     }
 

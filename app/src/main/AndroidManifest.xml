@@ -26,6 +26,7 @@
             android:parentActivityName=".ui.list.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
+
                 android:value=".ui.list.MainActivity"/>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>

@@ -99,7 +99,7 @@ public interface MovieDao {
 
     ///////////////////////FAVORITE MOVIES
     @Query("SELECT * FROM movies INNER JOIN favoriteMovies ON movies.id=favoriteMovies.id")
-    LiveData<List<FavoriteMovieEntry>> loadAllFavoriteMovies();
+    LiveData<List<MovieEntry>> loadAllFavoriteMovies();
 
     //select a movie by id
     @Query("SELECT * FROM favoriteMovies WHERE id = :id")

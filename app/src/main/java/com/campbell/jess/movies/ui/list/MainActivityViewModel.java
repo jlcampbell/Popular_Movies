@@ -25,7 +25,7 @@ public class MainActivityViewModel extends ViewModel {
     private final LiveData<List<MovieEntry>> mMovies;
     private final LiveData<List<MovieEntry>> mPopularMovies;
     private final LiveData<List<MovieEntry>> mRatedMovies;
-    //private final LiveData<List<MovieEntry>> mFavoriteMovies;
+    private final LiveData<List<MovieEntry>> mFavoriteMovies;
 
     /**
     public MainActivityViewModel(Application application) {
@@ -40,6 +40,7 @@ public class MainActivityViewModel extends ViewModel {
         mMovies = mMoviesRepository.getMovies();
         mPopularMovies = mMoviesRepository.getPopularMovies();
         mRatedMovies = mMoviesRepository.getRatedMovies();
+        mFavoriteMovies = mMoviesRepository.getFavoriteMovies();
         Log.d(log_tag, "creating view model from repository");
     }
 
@@ -54,9 +55,9 @@ public class MainActivityViewModel extends ViewModel {
     public LiveData<List<MovieEntry>> getRatedMovies() {
         Log.d(log_tag, "get rated movies");
         return mRatedMovies; }
-/**
+
     public LiveData<List<MovieEntry>> getFavoriteMovies() {
         Log.d(log_tag, "get favorite movies");
         return mFavoriteMovies; }
-**/
+
  }

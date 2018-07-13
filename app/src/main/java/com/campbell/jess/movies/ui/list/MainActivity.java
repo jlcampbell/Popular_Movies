@@ -78,29 +78,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         loadPopularMovieDataFromViewModel();
         //setupViewModel();
     }
-/**
-    private void setupViewModel(){
-        MainActivityViewModel viewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
-        viewModel.getMovies().observe(this, new Observer<List<MovieEntry>>() {
-            @Override
-            public void onChanged(@Nullable List<MovieEntry> movieEntries) {
-                Log.d(TAG, "updating grid of movies from livedata in viewmodel");
-                mRecyclerViewAdapter.setmMovieEntries(movieEntries);
-            }
-        });
-    }
 
-    private void setupPopularViewModel(){
-        MainActivityViewModel viewModel = ViewModelProviders.of(this).get(MainActivityViewModel.class);
-        viewModel.getPopularMovies().observe(this, new Observer<List<MovieEntry>>() {
-            @Override
-            public void onChanged(@Nullable List<MovieEntry> movieEntries) {
-                Log.d(TAG, "updating grid of movies from livedata in viewmodel");
-                mRecyclerViewAdapter.setmMovieEntries(movieEntries);
-            }
-        });
-    }
-     */
     private void loadMovieDataFromViewModel() {
         Log.d(TAG, "loadMovieDataFromRoom: putting observer in place");
         final Observer<List<MovieEntry>> movieObserver= listLiveData -> {
@@ -122,6 +100,13 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             if (listLiveData != null && listLiveData.size() != 0) showPosterDataView();
         };
         mViewModel.getRatedMovies().observe(this, movieObserver);
+    }
+    private void loadFavoriteMovieDataFromViewModel() {
+        final Observer<List<MovieEntry>> movieObserver= listLiveData -> {
+            mRecyclerViewAdapter.setmMovieEntries(listLiveData);
+            if (listLiveData != null && listLiveData.size() != 0) showPosterDataView();
+        };
+        mViewModel.getFavoriteMovies().observe(this, movieObserver);
     }
 
 
@@ -152,13 +137,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 
 
-    /**
-     *
-    private void loadMovieDataFromApi() {
-        new FetchMovieTask().execute();
-    }
-**/
-
 
 
     @Override
@@ -167,16 +145,18 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             String sort = sharedPreferences.getString(getString(R.string.pref_sort_key), "");
             // if sort equals favorites
             if (sort.equals(context.getString(R.string.pref_sort_favorites))) {
-                //load posters from favorites database
-                //loadMovieDataFromRoom();
-                //setupViewModel();
-
+                loadFavoriteMovieDataFromViewModel();
+                getSupportActionBar().setTitle(getString(R.string.favorites));
             } else if (sort.equals(context.getString(R.string.pref_sort_popularity))){
                 // if sort equals popularity
                 loadPopularMovieDataFromViewModel();
+                getSupportActionBar().setTitle(getString(R.string.popular_label));
+
             } else if (sort.equals(context.getString(R.string.pref_sort_rating))){
                 // if sort equals popularity
                 loadRatedMovieDataFromViewModel();
+                getSupportActionBar().setTitle(getString(R.string.rating_label));
+
             }
         }
     }
@@ -184,11 +164,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     public void onResume() {
         super.onResume();
-        //if sort preference is favorites
-        //call the adapter's set Thumbnails method
-        //from the movieDao
-        // something like mRecyclerviewAdapter.setMovies(mAppDatabase.movieDao().loadAllThumbs());
-
     }
 
     @Override
@@ -209,28 +184,4 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         startActivity(intent);
     }
 
-/**
-    public class FetchMovieTask extends AsyncTask<String, Void, String[]> {
-
-        @Override
-        protected String[] doInBackground(String... strings) {
-            URL movieRequestUrl = NetworkUtils.buildUrl(getApplicationContext());
-            try {
-                String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
-                return MovieJsonUtils.getMoviePostersFromJson(jsonMovieResponse, getApplicationContext());
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String[] posterUrls) {
-            if (posterUrls != null) {
-                showPosterDataView();
-                mRecyclerViewAdapter.setmThumbPaths(posterUrls);
-            }
-        }
-    }
-**/
 }

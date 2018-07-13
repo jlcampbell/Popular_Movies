@@ -80,16 +80,15 @@ public class MoviesRepository {
             });
         });
 
-        LiveData<RatedMovieEntry[]> ratedNetworkList = movieNetworkDataSource.getRatedMovieList();
+        LiveData<RatedMovieEntry[]> ratedNetworkList = mMovieNetworkDataSource.getRatedMovieList();
         ratedNetworkList.observeForever(newMovies -> {
             mExecutors.diskIO().execute(new Runnable() {
                 @Override
-                public void run() {
-                    mMovieDao.bulkRatedInsert(newMovies);
-                }
+                public void run() { mMovieDao.bulkRatedInsert(newMovies); }
             });
         });
 
+/**
         LiveData<String[]> trailers = movieNetworkDataSource.getTrailers();
         trailers.observeForever(trailersForMovie -> {
             mExecutors.diskIO().execute(new Runnable() {
@@ -102,7 +101,7 @@ public class MoviesRepository {
                 }
             });
         });
-
+**/
 
 
     }
@@ -131,6 +130,11 @@ public class MoviesRepository {
         });
         mInitialized = true;
     }
+
+    //Todo figure out how to store lists in database so reveiws and trailers can be added to room
+    //currently the details are loaded in the detail activity, this method is not currently used
+
+    /**
     private synchronized void initializeDetailData(int id) {
         Log.d(TAG, "initialize detail data");
         mExecutors.diskIO().execute(new Runnable() {
@@ -143,7 +147,7 @@ public class MoviesRepository {
         });
         //details initialized = true
     }
-
+**/
     /*
     database operations- called by view models to get movies from DAO
      */
@@ -167,15 +171,27 @@ public class MoviesRepository {
 
     public LiveData<MovieEntry> getMovieById(int id) {
         initializeData();
-        initializeDetailData(id);
+        //initializeDetailData(id);
         return mMovieDao.getMovieById(id);
     }
 
     public LiveData<String[]> getTrailersById(int id) {
-        initializeDetailData(id);
+        //initializeDetailData(id);
         return mTrailers;
     }
 
+    public LiveData<List<MovieEntry>> getFavoriteMovies() {
+        return mMovieDao.loadAllFavoriteMovies();
+    }
+    /**
+    public LiveData<FavoriteMovieEntry> getFavoriteMovieById(int id) {
+
+    }
+**/
+    public LiveData<FavoriteMovieEntry> getFavoriteById(int id) {
+             return mMovieDao.getFavoriteMovieById(id);
+    }
+/**
     public Boolean getIsFavorite(int id) {
         try {
             mMovieDao.getFavoriteMovieById(id);
@@ -185,13 +201,29 @@ public class MoviesRepository {
             return false;
         }
     }
+**/
     public void addFavorite(int id) {
         FavoriteMovieEntry entry = new FavoriteMovieEntry(id);
-        mMovieDao.insertFavoriteMovie(entry);
+        mExecutors.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(LOG_TAG, "adding favorite");
+                mMovieDao.insertFavoriteMovie(entry);
+            }
+        });
     }
+
     public void deleteFavorite(int id) {
         FavoriteMovieEntry entry = new FavoriteMovieEntry(id);
-        mMovieDao.deleteFavoriteMovie(entry);
+        mExecutors.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(LOG_TAG, "deleting favorite");
+                mMovieDao.deleteFavoriteMovie(entry);
+
+            }
+        });
     }
+
 }
 

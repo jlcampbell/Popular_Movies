@@ -28,6 +28,12 @@ android:fillViewport="true">
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:text="favorite"/>
+    <Button
+        android:id="@+id/btn_unfavorite"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="remove from favorites"
+        />
 
     <TextView
         android:id="@+id/tv_title"
