@@ -34,9 +34,8 @@ public class DetailActivityViewModel extends ViewModel {
         mMovie = mRepository.getMovieById(mMovieId);
         mFavorites = mRepository.getFavoriteMovies();
         mFavorite = mRepository.getFavoriteById(mMovieId);
- //       mTrailers = mRepository.getTrailersById(mMovieId);
+        //mTrailers = mRepository.getTrailersById(mMovieId);
 
-        //mIsFavorite = mRepository.getIsFavorite(mMovieId);
     }
 
     public LiveData<MovieEntry> getMovie() { return mMovie; }
@@ -45,18 +44,6 @@ public class DetailActivityViewModel extends ViewModel {
 
     public LiveData<FavoriteMovieEntry> getFavorite() { return mFavorite; }
     //   public LiveData<String[]> getTrailers() { return mTrailers; }
-    //public boolean getIsFavorite() { return mIsFavorite; }
-/**
-    public boolean getIsFavorite() {
-        boolean isFavorite = false;
-        if (mFavorites.getValue().contains(mMovie)) {
-            isFavorite = true;
-        }
-        return isFavorite;
-    }
-**/
-
-
 
     public void addFavorite() {
         mRepository.addFavorite(mMovieId);

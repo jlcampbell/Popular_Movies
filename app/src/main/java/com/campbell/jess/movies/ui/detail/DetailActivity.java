@@ -166,7 +166,6 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
 
     private void onFavoriteButtonClicked(){
         mViewModel.addFavorite();
-        Log.d(TAG, "onFavoriteButtonClicked: ");
         btn_favorite.setVisibility(View.INVISIBLE);
         btn_unfavorite.setVisibility(View.VISIBLE);
     }
@@ -175,7 +174,6 @@ public class DetailActivity extends AppCompatActivity implements TrailersAdapter
     public void onClick(int position) {
         Toast mToast = Toast.makeText(this, String.valueOf(position), Toast.LENGTH_SHORT);
         mToast.show();
-        //String id = mMovie.getTrailerIds()[position];
         String id = mTrailerIds[position];
         goToYouTube(getApplicationContext(), id);
     }

@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     private RecyclerView mRecyclerView;
     private PosterRecyclerViewAdapter mRecyclerViewAdapter;
-    private AppDatabase mAppDatabase;
 
     private MainActivityViewModel mViewModel;
 
@@ -68,19 +67,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         mRecyclerViewAdapter = new PosterRecyclerViewAdapter(this);
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
 
-        mAppDatabase = AppDatabase.getInstance(this);
-//TODO THIS NEEDS TO BE FIXED
-
         MainActivityViewModelFactory factory = InjectorUtils.provideMainActivityViewModelFactory(this.getApplicationContext());
-        Log.d(TAG, "onCreate: provided factory");
         mViewModel = ViewModelProviders.of(this, factory).get(MainActivityViewModel.class);
-        Log.d(TAG, "onCreate: created view model");
         loadPopularMovieDataFromViewModel();
-        //setupViewModel();
     }
 
     private void loadMovieDataFromViewModel() {
-        Log.d(TAG, "loadMovieDataFromRoom: putting observer in place");
         final Observer<List<MovieEntry>> movieObserver= listLiveData -> {
             mRecyclerViewAdapter.setmMovieEntries(listLiveData);
             if (listLiveData != null && listLiveData.size() != 0) showPosterDataView();

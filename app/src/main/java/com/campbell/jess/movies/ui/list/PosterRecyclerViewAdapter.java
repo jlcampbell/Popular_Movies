@@ -85,59 +85,31 @@ public class PosterRecyclerViewAdapter extends RecyclerView.Adapter<PosterRecycl
 
     @Override
     public void onBindViewHolder(@NonNull PosterRecyclerViewAdapterViewHolder viewHolder, int position) {
-        Log.d(TAG, "onBindViewHolder: on bind view holder");
         //initialize image view
         ImageView imageView = viewHolder.mMoviePoster;
         String posterUrlForThisMovie;
+        try {
 
-        //if data comes from api
-       // if (dataFromApi){
-         //   posterUrlForThisMovie = mThumbPaths[position];
+            MovieEntry movieEntry = mMovieEntries.get(position);
+            posterUrlForThisMovie = movieEntry.getPoster();
             //load url
-           // Picasso.get().load(posterUrlForThisMovie).into(imageView);
-        //}
-
-        //if data comes from favorites db
-        //else {
-            try {
-
-                MovieEntry movieEntry = mMovieEntries.get(position);
-                posterUrlForThisMovie = movieEntry.getPoster();
-                Log.d(TAG, "onBindViewHolder: "+posterUrlForThisMovie);
-                //load url
-                Picasso.get().load(posterUrlForThisMovie).into(imageView);
-            } catch (IndexOutOfBoundsException e){
-                Log.e(TAG, e.toString());
-            }
-          //  }
-
+            Picasso.get().load(posterUrlForThisMovie).into(imageView);
+        } catch (IndexOutOfBoundsException e){
+            Log.e(TAG, e.toString());
+        }
     }
 
     @Override
     public int getItemCount() {
-        Log.d(TAG, "getItemCount: view holder");
         if (null == mMovieEntries) return 0;
         return mMovieEntries.size();
     }
-
-    /**
-     * This method used to set the movie posters on a PosterAdapter
-     * it is used when you have this list of thumbnails from api calls
-     * @param thumbPaths The new thumbnails to display
-     */
-    //public void setmThumbPaths(String[] thumbPaths) {
-      //  mThumbPaths = thumbPaths;
-        //dataFromApi = true;
-        //notifyDataSetChanged();
-    //}
 
     /**
      * This method is used in the main activity to set the list of movieEntries
      *
      */
     public void setmMovieEntries(List<MovieEntry> movieEntries){
-        Log.d(TAG, "setting movie entries in adapter");
-
         mMovieEntries = movieEntries;
         notifyDataSetChanged();
     }

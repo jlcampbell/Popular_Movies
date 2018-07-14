@@ -25,9 +25,7 @@ public class InjectorUtils {
 
 
     public static MainActivityViewModelFactory provideMainActivityViewModelFactory(Context context) {
-        Log.d(log_tag, "will attempt to provide repository");
         MoviesRepository moviesRepository = provideRepository(context.getApplicationContext());
-        Log.d(log_tag, "will attempt to return view model factory");
         return new MainActivityViewModelFactory(moviesRepository);
     }
 

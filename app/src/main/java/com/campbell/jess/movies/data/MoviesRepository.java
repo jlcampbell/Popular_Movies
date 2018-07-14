@@ -30,7 +30,7 @@ public class MoviesRepository {
     private final AppExecutors mExecutors;
     private boolean mInitialized = false;
 
-    private int mId ;
+
     private LiveData<String[]> mTrailers;
 
     private MoviesRepository( MovieDao movieDao, MovieNetworkDataSource movieNetworkDataSource, AppExecutors appExecutors) {
@@ -107,11 +107,9 @@ public class MoviesRepository {
     }
 
     public synchronized static MoviesRepository getInstance(MovieDao movieDao, MovieNetworkDataSource movieNetworkDataSource, AppExecutors appExecutors){
-        Log.d(LOG_TAG, "getting the repository");
         if (sInstance == null){
             synchronized (LOCK) {
                 sInstance = new MoviesRepository(movieDao, movieNetworkDataSource, appExecutors);
-                Log.d(LOG_TAG, "made new repository");
             }
         }
         return sInstance;
@@ -120,7 +118,6 @@ public class MoviesRepository {
 
     private synchronized void initializeData() {
 //TODO initialize data needs to incorporate a daily update of the data, not just update it everytime it is called
-        Log.d(TAG, "initializeData: ");
         mExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
@@ -191,23 +188,12 @@ public class MoviesRepository {
     public LiveData<FavoriteMovieEntry> getFavoriteById(int id) {
              return mMovieDao.getFavoriteMovieById(id);
     }
-/**
-    public Boolean getIsFavorite(int id) {
-        try {
-            mMovieDao.getFavoriteMovieById(id);
-            return true;
-        }
-        catch (Exception e){
-            return false;
-        }
-    }
-**/
+
     public void addFavorite(int id) {
         FavoriteMovieEntry entry = new FavoriteMovieEntry(id);
         mExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                Log.d(LOG_TAG, "adding favorite");
                 mMovieDao.insertFavoriteMovie(entry);
             }
         });
